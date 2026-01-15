@@ -1,6 +1,8 @@
-import express, { Request, Response } from 'express';
-import donationRoutes from './routes/donations';
+import type { Request, Response } from 'express';
+import express from 'express';
+
 import { errorHandler } from './middleware/errorHandler';
+import donationRoutes from './routes/donations';
 
 const app = express();
 

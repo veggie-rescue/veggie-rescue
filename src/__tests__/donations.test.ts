@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import app from '../app';
 import { donationService } from '../services/donationService';
 
@@ -43,7 +44,7 @@ describe('Donations API', () => {
       expect(response.status).toBe(400);
       expect(response.body.error.code).toBe('VALIDATION_ERROR');
       expect(response.body.error.details).toContainEqual(
-        expect.objectContaining({ field: 'donorName' })
+        expect.objectContaining({ field: 'donorName' }),
       );
     });
 
@@ -57,7 +58,7 @@ describe('Donations API', () => {
         expect.objectContaining({
           field: 'donorEmail',
           message: 'Invalid email address',
-        })
+        }),
       );
     });
 
@@ -71,7 +72,7 @@ describe('Donations API', () => {
         expect.objectContaining({
           field: 'items',
           message: 'At least one item is required',
-        })
+        }),
       );
     });
 
@@ -85,7 +86,7 @@ describe('Donations API', () => {
 
       expect(response.status).toBe(400);
       expect(response.body.error.details).toContainEqual(
-        expect.objectContaining({ field: 'items.0.quantity' })
+        expect.objectContaining({ field: 'items.0.quantity' }),
       );
     });
   });
@@ -126,9 +127,7 @@ describe('Donations API', () => {
     });
 
     it('should return 404 for non-existent donation', async () => {
-      const response = await request(app).get(
-        '/donations/non-existent-id'
-      );
+      const response = await request(app).get('/donations/non-existent-id');
 
       expect(response.status).toBe(404);
       expect(response.body.error.message).toBe('Donation not found');
@@ -149,7 +148,7 @@ describe('Donations API', () => {
       expect(response.status).toBe(200);
       expect(response.body.data.status).toBe('scheduled');
       expect(response.body.data.updatedAt).not.toBe(
-        createRes.body.data.updatedAt
+        createRes.body.data.updatedAt,
       );
     });
 
@@ -208,9 +207,7 @@ describe('Donations API', () => {
     });
 
     it('should return 404 for non-existent donation', async () => {
-      const response = await request(app).delete(
-        '/donations/non-existent-id'
-      );
+      const response = await request(app).delete('/donations/non-existent-id');
 
       expect(response.status).toBe(404);
     });

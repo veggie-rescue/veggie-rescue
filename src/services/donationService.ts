@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import {
-  Donation,
+
+import type {
   CreateDonationInput,
+  Donation,
   UpdateDonationInput,
 } from '../types/donation';
 
@@ -12,7 +13,7 @@ export const donationService = {
   findAll(): Donation[] {
     return Array.from(donations.values()).sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
   },
 

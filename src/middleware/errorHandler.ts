@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
+
 import { AppError, ValidationError } from '../types/errors';
 
 interface ErrorResponse {
@@ -10,12 +11,14 @@ interface ErrorResponse {
   };
 }
 
-export function errorHandler(
+// Express error handlers require all 4 parameters to be recognized
+export const errorHandler = (
   err: Error,
-  req: Request,
+  _req: Request,
   res: Response<ErrorResponse>,
-  next: NextFunction
-): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction,
+): void => {
   console.error(`[Error] ${err.name}: ${err.message}`);
 
   if (err instanceof ZodError) {

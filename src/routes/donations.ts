@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { donationService } from '../services/donationService';
+
 import { validate } from '../middleware/validate';
+import { donationService } from '../services/donationService';
 import { createDonationSchema, updateDonationSchema } from '../types/donation';
 import { NotFoundError } from '../types/errors';
-
 
 const router = Router();
 
@@ -19,7 +19,8 @@ router.get('/:id', (req, res, next) => {
   const donation = donationService.findById(id);
 
   if (!donation) {
-    return next(new NotFoundError('Donation'));
+    next(new NotFoundError('Donation'));
+    return;
   }
 
   res.json({ data: donation });
@@ -37,7 +38,8 @@ router.patch('/:id', validate(updateDonationSchema), (req, res, next) => {
   const donation = donationService.update(id, req.body);
 
   if (!donation) {
-    return next(new NotFoundError('Donation'));
+    next(new NotFoundError('Donation'));
+    return;
   }
 
   res.json({ data: donation });
@@ -49,7 +51,8 @@ router.delete('/:id', (req, res, next) => {
   const deleted = donationService.delete(id);
 
   if (!deleted) {
-    return next(new NotFoundError('Donation'));
+    next(new NotFoundError('Donation'));
+    return;
   }
 
   res.status(204).send();

@@ -1,7 +1,7 @@
 export class AppError extends Error {
-  constructor(
-    public statusCode: number,
-    message: string
+  public constructor(
+    public readonly statusCode: number,
+    message: string,
   ) {
     super(message);
     this.name = 'AppError';
@@ -9,16 +9,16 @@ export class AppError extends Error {
 }
 
 export class NotFoundError extends AppError {
-  constructor(resource: string) {
+  public constructor(resource: string) {
     super(404, `${resource} not found`);
     this.name = 'NotFoundError';
   }
 }
 
 export class ValidationError extends AppError {
-  constructor(
+  public constructor(
     message: string,
-    public errors: Array<{ field: string; message: string }>
+    public readonly errors: Array<{ field: string; message: string }>,
   ) {
     super(400, message);
     this.name = 'ValidationError';
