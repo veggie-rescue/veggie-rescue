@@ -161,7 +161,7 @@ const testConfig = {
   files: ['**/__tests__/**/*.ts', '**/*.test.ts', '**/*.spec.ts'],
   rules: {
     'max-lines': ['warn', 500],
-    'max-lines-per-function': ['warn', 150],
+    'max-lines-per-function': ['warn', 250], // Integration tests need more room
   },
 };
 

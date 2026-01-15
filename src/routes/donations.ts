@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 
 // GET /donations/:id - Get a single donation
 router.get('/:id', (req, res, next) => {
-  const id = req.params.id as string;
+  const id = req.params.id;
   const donation = donationService.findById(id);
 
   if (!donation) {
@@ -47,7 +47,7 @@ router.patch('/:id', validate(updateDonationSchema), (req, res, next) => {
 
 // DELETE /donations/:id - Delete a donation
 router.delete('/:id', (req, res, next) => {
-  const id = req.params.id as string;
+  const id = req.params.id;
   const deleted = donationService.delete(id);
 
   if (!deleted) {

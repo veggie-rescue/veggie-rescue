@@ -63,4 +63,4 @@ export const errorHandler = (
       code: 'INTERNAL_ERROR',
     },
   });
-}
+};

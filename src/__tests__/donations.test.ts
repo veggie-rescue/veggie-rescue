@@ -1,8 +1,17 @@
+import type { Response } from 'supertest';
 import request from 'supertest';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import app from '../app';
 import { donationService } from '../services/donationService';
+import type { ApiErrorResponse, ApiResponse } from '../types/api';
+import type { Donation } from '../types/donation';
+
+// Type-safe response body accessors
+const getData = <T>(res: Response): T => (res.body as ApiResponse<T>).data;
+
+const getError = (res: Response): ApiErrorResponse['error'] =>
+  (res.body as ApiErrorResponse).error;
 
 const validDonation = {
   donorName: 'John Doe',
@@ -29,21 +38,23 @@ describe('Donations API', () => {
         .send(validDonation);
 
       expect(response.status).toBe(201);
-      expect(response.body.data).toMatchObject({
+      const data = getData<Donation>(response);
+      expect(data).toMatchObject({
         donorName: validDonation.donorName,
         donorEmail: validDonation.donorEmail,
         status: 'pending',
       });
-      expect(response.body.data.id).toBeDefined();
-      expect(response.body.data.createdAt).toBeDefined();
+      expect(data.id).toBeDefined();
+      expect(data.createdAt).toBeDefined();
     });
 
     it('should reject missing required fields', async () => {
       const response = await request(app).post('/donations').send({});
 
       expect(response.status).toBe(400);
-      expect(response.body.error.code).toBe('VALIDATION_ERROR');
-      expect(response.body.error.details).toContainEqual(
+      const error = getError(response);
+      expect(error.code).toBe('VALIDATION_ERROR');
+      expect(error.details).toContainEqual(
         expect.objectContaining({ field: 'donorName' }),
       );
     });
@@ -54,7 +65,7 @@ describe('Donations API', () => {
         .send({ ...validDonation, donorEmail: 'not-an-email' });
 
       expect(response.status).toBe(400);
-      expect(response.body.error.details).toContainEqual(
+      expect(getError(response).details).toContainEqual(
         expect.objectContaining({
           field: 'donorEmail',
           message: 'Invalid email address',
@@ -68,7 +79,7 @@ describe('Donations API', () => {
         .send({ ...validDonation, items: [] });
 
       expect(response.status).toBe(400);
-      expect(response.body.error.details).toContainEqual(
+      expect(getError(response).details).toContainEqual(
         expect.objectContaining({
           field: 'items',
           message: 'At least one item is required',
@@ -85,7 +96,7 @@ describe('Donations API', () => {
         });
 
       expect(response.status).toBe(400);
-      expect(response.body.error.details).toContainEqual(
+      expect(getError(response).details).toContainEqual(
         expect.objectContaining({ field: 'items.0.quantity' }),
       );
     });
@@ -96,7 +107,7 @@ describe('Donations API', () => {
       const response = await request(app).get('/donations');
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toEqual([]);
+      expect(getData<Donation[]>(response)).toEqual([]);
     });
 
     it('should return all donations sorted by newest first', async () => {
@@ -108,8 +119,9 @@ describe('Donations API', () => {
       const response = await request(app).get('/donations');
 
       expect(response.status).toBe(200);
-      expect(response.body.data).toHaveLength(2);
-      expect(response.body.data[0].donorName).toBe('Jane Doe');
+      const data = getData<Donation[]>(response);
+      expect(data).toHaveLength(2);
+      expect(data[0]?.donorName).toBe('Jane Doe');
     });
   });
 
@@ -118,19 +130,19 @@ describe('Donations API', () => {
       const createRes = await request(app)
         .post('/donations')
         .send(validDonation);
-      const donationId = createRes.body.data.id;
+      const donationId = getData<Donation>(createRes).id;
 
       const response = await request(app).get(`/donations/${donationId}`);
 
       expect(response.status).toBe(200);
-      expect(response.body.data.id).toBe(donationId);
+      expect(getData<Donation>(response).id).toBe(donationId);
     });
 
     it('should return 404 for non-existent donation', async () => {
       const response = await request(app).get('/donations/non-existent-id');
 
       expect(response.status).toBe(404);
-      expect(response.body.error.message).toBe('Donation not found');
+      expect(getError(response).message).toBe('Donation not found');
     });
   });
 
@@ -139,24 +151,23 @@ describe('Donations API', () => {
       const createRes = await request(app)
         .post('/donations')
         .send(validDonation);
-      const donationId = createRes.body.data.id;
+      const created = getData<Donation>(createRes);
 
       const response = await request(app)
-        .patch(`/donations/${donationId}`)
+        .patch(`/donations/${created.id}`)
         .send({ status: 'scheduled' });
 
       expect(response.status).toBe(200);
-      expect(response.body.data.status).toBe('scheduled');
-      expect(response.body.data.updatedAt).not.toBe(
-        createRes.body.data.updatedAt,
-      );
+      const updated = getData<Donation>(response);
+      expect(updated.status).toBe('scheduled');
+      expect(updated.updatedAt).not.toBe(created.updatedAt);
     });
 
     it('should update multiple fields', async () => {
       const createRes = await request(app)
         .post('/donations')
         .send(validDonation);
-      const donationId = createRes.body.data.id;
+      const donationId = getData<Donation>(createRes).id;
 
       const response = await request(app)
         .patch(`/donations/${donationId}`)
@@ -166,8 +177,9 @@ describe('Donations API', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(response.body.data.donorName).toBe('Updated Name');
-      expect(response.body.data.notes).toBe('Updated notes');
+      const updated = getData<Donation>(response);
+      expect(updated.donorName).toBe('Updated Name');
+      expect(updated.notes).toBe('Updated notes');
     });
 
     it('should return 404 for non-existent donation', async () => {
@@ -182,7 +194,7 @@ describe('Donations API', () => {
       const createRes = await request(app)
         .post('/donations')
         .send(validDonation);
-      const donationId = createRes.body.data.id;
+      const donationId = getData<Donation>(createRes).id;
 
       const response = await request(app)
         .patch(`/donations/${donationId}`)
@@ -197,7 +209,7 @@ describe('Donations API', () => {
       const createRes = await request(app)
         .post('/donations')
         .send(validDonation);
-      const donationId = createRes.body.data.id;
+      const donationId = getData<Donation>(createRes).id;
 
       const deleteRes = await request(app).delete(`/donations/${donationId}`);
       expect(deleteRes.status).toBe(204);
