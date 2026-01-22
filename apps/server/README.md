@@ -4,31 +4,41 @@ Express + TypeScript API server for managing food donation pickups.
 
 ## Quick Start
 
+From the monorepo root:
+
 ```bash
+# Install dependencies (if not already done)
 npm install
-npm run dev
+
+# Start server in development mode
+npm run dev -w @veggie-rescue/server
 ```
 
 Server runs at `http://localhost:3000`
 
 ## Scripts
 
+Run from monorepo root with `-w @veggie-rescue/server`:
+
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start dev server with hot reload |
-| `npm run build` | Compile TypeScript to dist/ |
-| `npm start` | Run compiled server |
-| `npm test` | Run tests with Vitest |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Auto-fix lint issues |
+| `npm run dev -w @veggie-rescue/server` | Start dev server with hot reload |
+| `npm run build -w @veggie-rescue/server` | Compile TypeScript to dist/ |
+| `npm start -w @veggie-rescue/server` | Run compiled server |
+| `npm test -w @veggie-rescue/server` | Run tests with Vitest |
+| `npm run lint -w @veggie-rescue/server` | Run ESLint |
+
+Or run all packages together from root: `npm run dev`
 
 ## API Endpoints
 
 ### Health
+
 - `GET /` - Welcome message
 - `GET /health` - Health check
 
 ### Donations
+
 - `GET /donations` - List all donations
 - `GET /donations/:id` - Get donation by ID
 - `POST /donations` - Create donation
@@ -63,6 +73,15 @@ src/
 ├── app.ts              # Express app setup
 └── index.ts            # Server entry point
 ```
+
+## Shared Types
+
+This package uses `@veggie-rescue/shared-types` for core types:
+
+- `Donation` - Core donation entity
+- `DonationItem` - Items within a donation
+- `CreateDonationInput` - Validated input schema
+- `ApiResponse<T>` - Standardized response wrapper
 
 ## Tech Stack
 
