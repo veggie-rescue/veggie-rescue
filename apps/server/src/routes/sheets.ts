@@ -21,7 +21,8 @@ router.get('/', (req, res) => {
 router.put('/', (req, res) => {
   // In a real implementation, this would update the data
   // For now, just echo back the request body with success
-  res.json({ data: req.body });
+  const body = req.body as typeof mockSheetData;
+  res.json({ data: body });
 });
 
 export default router;
