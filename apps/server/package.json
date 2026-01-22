@@ -1,5 +1,5 @@
 {
-  "name": "veggie-rescue-server",
+  "name": "@veggie-rescue/server",
   "version": "1.0.0",
   "description": "Veggie Rescue Server",
   "main": "dist/index.js",
@@ -10,12 +10,14 @@
     "dev": "tsx watch src/index.ts",
     "test": "vitest",
     "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix"
+    "lint:fix": "eslint src/ --fix",
+    "clean": "rm -rf dist node_modules"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@veggie-rescue/shared-types": "*",
     "express": "^5.2.1",
     "uuid": "^13.0.0",
     "zod": "^4.3.5"
