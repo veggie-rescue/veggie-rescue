@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    // Base
+    "target": "ES2024",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2024"],
+    "types": ["node"],
+
+    // Output
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Module handling
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "isolatedModules": true,
+
+    // Strictness
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
