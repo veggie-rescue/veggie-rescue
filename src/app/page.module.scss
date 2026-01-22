@@ -5,15 +5,26 @@
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
+  background-color: #f5f6fa;
 }
 
 .title {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 1rem;
+  color: #2d3436;
 }
 
 .description {
   font-size: 1.25rem;
   color: #666;
+  margin-bottom: 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  max-width: 900px;
+  width: 100%;
 }
