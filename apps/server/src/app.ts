@@ -3,6 +3,7 @@ import express from 'express';
 
 import { errorHandler } from './middleware/errorHandler';
 import donationRoutes from './routes/donations';
+import sheetsRoutes from './routes/sheets';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 app.use('/donations', donationRoutes);
+app.use('/sheets', sheetsRoutes);
 
 app.use(errorHandler);
 
