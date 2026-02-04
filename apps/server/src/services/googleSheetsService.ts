@@ -30,7 +30,7 @@ const rowsToObjects = (values: string[][]): Record<string, string>[] => {
   });
 };
 
-const isSameMonth = (date: string, present = new Date()) => {
+const isSameMonth = (date: string, present = new Date(2025, 10)) => {
   const d = new Date(date);
   return (
     d.getMonth() === present.getMonth() &&
@@ -38,7 +38,7 @@ const isSameMonth = (date: string, present = new Date()) => {
   );
 };
 
-const isSameYear = (date: string, present = new Date()) => {
+const isSameYear = (date: string, present = new Date(2025, 10)) => {
   const d = new Date(date);
   return d.getFullYear() === present.getFullYear();
 };
@@ -166,8 +166,8 @@ export const getParsedNonprofitData = async () => {
       totalDeliveriesThisYear: totals.totalDeliveriesThisYear,
       totalPoundsThisYear: totals.totalPoundsThisYear,
       avgPoundsPerDelivery:
-        totals.totalDeliveriesThisYear > 0
-          ? totals.totalPoundsThisYear / totals.totalDeliveriesThisYear
+        totals.totalDeliveriesThisMonth > 0
+          ? totals.totalPoundsThisMonth / totals.totalDeliveriesThisMonth
           : 0,
       priorityLevel: nonprofitName?.priorityLevel,
       deliveryFrequency: getDeliveryFrequency(totals.totalDeliveriesThisMonth),
