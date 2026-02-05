@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 
-import { AppError, ValidationError } from '../types/errors';
+import { AppError, ValidationError, UnauthorizedError } from '../types/errors';
 
 interface ErrorResponse {
   error: {
@@ -54,6 +54,14 @@ export const errorHandler = (
       },
     });
     return;
+  }
+
+  if (err instanceof UnauthorizedError) {
+    res.status(401).json({
+      error: {
+        message: "401 Unauthorized"
+      }
+    })
   }
 
   // Unknown error
