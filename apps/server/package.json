@@ -18,6 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@veggie-rescue/shared-types": "*",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "uuid": "^13.0.0",
     "zod": "^4.3.5"
@@ -26,6 +27,7 @@
     "@eslint/compat": "^2.0.1",
     "@eslint/js": "^9.39.2",
     "@stylistic/eslint-plugin": "^5.7.0",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.8",
     "@types/supertest": "^6.0.3",
