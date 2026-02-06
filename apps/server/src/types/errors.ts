@@ -24,3 +24,12 @@ export class ValidationError extends AppError {
     this.name = 'ValidationError';
   }
 }
+
+export class UnauthorizedError extends AppError {
+  public constructor(
+    message: string
+  ) {
+    super(401, `User unauthorized. ${message}`);
+    this.name = 'AuthorizationError';
+  }
+}
