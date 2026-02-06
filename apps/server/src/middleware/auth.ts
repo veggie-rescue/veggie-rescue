@@ -8,7 +8,7 @@ export const authentication = (
         return 401;
     }
 
-    // Extract request auth token and compare it with the access code
+    // Extract request token and compare it with the access code
     const token = authHeader.split(' ')[1];
     if (token !== process.env.ACCESS_CODE) {
         return 401;

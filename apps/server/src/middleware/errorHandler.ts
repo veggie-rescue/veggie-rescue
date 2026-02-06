@@ -59,7 +59,8 @@ export const errorHandler = (
   if (err instanceof UnauthorizedError) {
     res.status(401).json({
       error: {
-        message: "401 Unauthorized"
+        message: "Unauthorized user",
+        code: "UNAUTHORIZED_ERROR"
       }
     })
   }
@@ -68,7 +69,7 @@ export const errorHandler = (
   res.status(500).json({
     error: {
       message: 'Internal server error',
-      code: 'INTERNAL_ERROR',
+      code: 'INTERNAL_ERROR'
     },
   });
 };
