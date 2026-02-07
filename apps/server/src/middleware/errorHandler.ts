@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 
-import { AppError, ValidationError } from '../types/errors';
+import { AppError, RateLimitError, ValidationError } from '../types/errors';
 
 interface ErrorResponse {
   error: {
@@ -52,6 +52,16 @@ export const errorHandler = (
         message: err.message,
         code: err.name.toUpperCase().replace('ERROR', '_ERROR'),
       },
+    });
+    return;
+  }
+
+  if (err instanceof RateLimitError) {
+    res.status(429).json({
+      error: {
+        message: err.message,
+        code: "RATE_LIMIT_ERROR"
+      }
     });
     return;
   }
