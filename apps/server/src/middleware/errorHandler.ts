@@ -62,7 +62,8 @@ export const errorHandler = (
         message: "Unauthorized user",
         code: "UNAUTHORIZED_ERROR"
       }
-    })
+    });
+    return;
   }
 
   // Unknown error
