@@ -3,6 +3,8 @@ import { RateLimitError } from "../types/errors";
 
 // Stores IP Address: string : {retryAfter: number, requestCount: number}
     // retryAfter is in millseconds
+    // Periodically check the storage for expired times every 15 minutes
+let lastIpStoreCheck = Date.now();
 const ipStore = new Map();
 
 export const rateLimit = (
@@ -20,12 +22,13 @@ export const rateLimit = (
         // If it's been seen, ensure that it hasn't passed the request limit
         // IF it hasn't, log the IP and track its count
     const ip = req.ip;
-    const ipData = ipStore.get(ip);
-    if (ipData) {
+    if (ipStore.has(ip)) {
+        const ipData = ipStore.get(ip);
+
         // If the reset hasn't been automatically triggered by cleanup,
-            // perform it manually
+            // perform it manually and then reset the IP's data
         if (Date.now() > ipData.retryAfter) {
-            ipStore.delete(ip);
+            ipStore.set(ip, {retryAfter: Date.now() + getWindow(), requestCount: 1});
             next();
             return;
         }
@@ -48,11 +51,35 @@ export const rateLimit = (
     }
 
     // Set informative headers
+    const ipData = ipStore.get(ip);
+    
     res.setHeader("X-RateLimit-Limit", getRateLimit());
     res.setHeader("X-RateLimit-Remaining", getRateLimit() - ipData.requestCount);
     res.setHeader("X-RateLimit-Reset", (new Date(ipData.retryAfter)).toString());
 
+    attemptCleanup();
+
     next();
+}
+
+function attemptCleanup() {
+    // Attempt ipStore cleanup every 15 minutes
+    const NUM_MINUTES_BETWEEN_CLEANUPS = 15;
+
+    // Ensure 15 minutes have passed
+        // Measured in ms
+    if (Date.now() - lastIpStoreCheck < NUM_MINUTES_BETWEEN_CLEANUPS * 60 * 1000) {
+        return;
+    }
+
+    // Delete entries older 
+    ipStore.forEach((data, ip) => {
+        if (Date.now() - data.retryAfter > getWindow()) {
+            ipStore.delete(ip);
+        }
+    });
+
+    lastIpStoreCheck = Date.now();
 }
 
 function getWindow(): number {
