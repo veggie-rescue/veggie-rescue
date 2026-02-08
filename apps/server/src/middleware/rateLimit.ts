@@ -34,16 +34,20 @@ export const rateLimit = (
         }
         
         // Ensure that the limit hasn't been reached
-        if (ipData.count > getRateLimit()) {
-            const millisecondsTillReset = ((new Date(ipData.retryAfter)).getMilliseconds() - Date.now());
-            res.setHeader("Retry-After", millisecondsTillReset);
+        if (ipData.requestCount >= getRateLimit()) {
+            const secondsTillReset = (ipData.retryAfter - Date.now()) / 1000;
+            res.setHeader("Retry-After", secondsTillReset);
 
-            next(new RateLimitError(millisecondsTillReset));
+            res.setHeader("X-RateLimit-Limit", getRateLimit());
+            res.setHeader("X-RateLimit-Remaining", getRateLimit() - ipData.requestCount);
+            res.setHeader("X-RateLimit-Reset", (new Date(ipData.retryAfter)).toString());
+            
+            next(new RateLimitError(secondsTillReset));
             return;
         }
 
         // Increment the count if no guards have been tripped
-        ipData.count++;
+        ipData.requestCount++;
     }
     else {
         // Initialize the IP in the store
@@ -62,7 +66,7 @@ export const rateLimit = (
     next();
 }
 
-function attemptCleanup() {
+function attemptCleanup(): void {
     // Attempt ipStore cleanup every 15 minutes
     const NUM_MINUTES_BETWEEN_CLEANUPS = 15;
 
@@ -88,7 +92,7 @@ function getWindow(): number {
     }
     
     // 15 minute default
-    return 90000;
+    return 900000;
 }
 
 function getRateLimit(): number {
