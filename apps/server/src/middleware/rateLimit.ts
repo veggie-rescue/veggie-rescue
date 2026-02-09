@@ -86,13 +86,15 @@ function attemptCleanup(): void {
     lastIpStoreCheck = Date.now();
 }
 
+// Returns window size in ms
 function getWindow(): number {
     if (process.env.RATE_LIMIT_WINDOW_MS) {
-        return parseInt(process.env.RATE_LIMIT_WINDOW_MS)
+        return parseInt(process.env.RATE_LIMIT_WINDOW_MS);
     }
     
-    // 15 minute default
-    return 900000;
+    // 15 minute default in case env cannot be found
+    const DEFAULT_MINS = 15;
+    return DEFAULT_MINS * 1000 * 60;
 }
 
 function getRateLimit(): number {
@@ -100,6 +102,6 @@ function getRateLimit(): number {
         return parseInt(process.env.RATE_LIMIT_MAX_REQUESTS);
     }
 
-    // 100 request default
+    // 100 request default in case env cannot be found
     return 100;
 }
