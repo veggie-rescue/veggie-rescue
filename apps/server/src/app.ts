@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import express from 'express';
+import { rateLimit } from './middleware/rateLimit';
 
 import { errorHandler } from './middleware/errorHandler';
 import donationRoutes from './routes/donations';
@@ -8,6 +9,7 @@ import sheetsRoutes from './routes/sheets';
 const app = express();
 
 app.use(express.json());
+app.use(rateLimit);
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Veggie Rescue Server is running!' });
