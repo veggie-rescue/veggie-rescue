@@ -15,11 +15,6 @@ app.options('/', cors());
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Veggie Rescue Server is running!' });
-  res.cookie('teest', '1', {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true
-  });
 });
 
 app.get('/health', (req: Request, res: Response) => {
