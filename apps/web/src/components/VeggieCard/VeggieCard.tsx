@@ -1,4 +1,3 @@
-import { useTableData } from '@/context';
 import styles from './VeggieCard.module.scss';
 
 interface VeggieCardProps {
