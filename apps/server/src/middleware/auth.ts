@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import type { Request, Response, NextFunction } from 'express';
 import { UnauthorizedError } from '../types/errors';
 
@@ -22,7 +23,11 @@ export const authentication = (
 
     // Extract request token and compare it with the access code
     const token = authHeader.split(' ')[1];
-    if (token !== process.env.ACCESS_CODE) {
+    const accessCode = process.env.ACCESS_CODE ?? '';
+    if (
+        token.length !== accessCode.length ||
+        !crypto.timingSafeEqual(Buffer.from(token), Buffer.from(accessCode))
+    ) {
         next(new UnauthorizedError("Invalid access token."));
         return;
     }
