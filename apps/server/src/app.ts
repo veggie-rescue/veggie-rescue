@@ -1,5 +1,7 @@
 import type { Request, Response } from 'express';
 import express from 'express';
+import cors from 'cors';
+import { corsOptions } from './middleware/cors';
 
 import { errorHandler } from './middleware/errorHandler';
 import { authentication } from './middleware/auth';
@@ -9,6 +11,7 @@ import sheetsRoutes from './routes/sheets';
 const app = express();
 
 app.use(express.json());
+app.use(cors(corsOptions));
 app.use(authentication);
 
 app.get('/', (req: Request, res: Response) => {
