@@ -30,6 +30,6 @@ export class UnauthorizedError extends AppError {
     message: string
   ) {
     super(401, `User unauthorized. ${message}`);
-    this.name = 'AuthorizationError';
+    this.name = 'UnauthorizedError';
   }
 }
