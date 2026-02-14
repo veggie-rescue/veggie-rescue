@@ -2,12 +2,14 @@ import type { Request, Response } from 'express';
 import express from 'express';
 
 import { errorHandler } from './middleware/errorHandler';
+import { authentication } from './middleware/auth';
 import donationRoutes from './routes/donations';
 import sheetsRoutes from './routes/sheets';
 
 const app = express();
 
 app.use(express.json());
+app.use(authentication);
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Veggie Rescue Server is running!' });
