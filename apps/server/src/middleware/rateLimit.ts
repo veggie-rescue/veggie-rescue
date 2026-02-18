@@ -78,7 +78,7 @@ function attemptCleanup(): void {
 
     // Delete entries older 
     ipStore.forEach((data, ip) => {
-        if (Date.now() - data.retryAfter > getWindow()) {
+        if (Date.now() > data.retryAfter) {
             ipStore.delete(ip);
         }
     });
