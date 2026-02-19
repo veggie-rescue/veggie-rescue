@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import express from 'express';
+import { rateLimit } from './middleware/rateLimit';
 import cors from 'cors';
 import { corsOptions } from './middleware/cors';
 
@@ -12,6 +13,7 @@ const app = express();
 import testing from './routes/testing';
 
 app.use(express.json());
+app.use(rateLimit);
 app.use(cors(corsOptions));
 app.use(authentication);
 

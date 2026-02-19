@@ -25,6 +25,13 @@ export class ValidationError extends AppError {
   }
 }
 
+export class RateLimitError extends AppError {
+  public constructor(retryAfter: number) {
+    super(429, `Request limit exceeded. Try again after ${retryAfter} seconds.`);
+    this.name = "RateLimitError";
+  }
+}
+
 export class UnauthorizedError extends AppError {
   public constructor(
     message: string

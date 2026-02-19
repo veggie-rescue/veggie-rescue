@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 
-import { AppError, ValidationError, UnauthorizedError } from '../types/errors';
+import { AppError, RateLimitError, ValidationError, UnauthorizedError } from '../types/errors';
 
 interface ErrorResponse {
   error: {
@@ -56,7 +56,15 @@ export const errorHandler = (
     return;
   }
 
-  if (err instanceof UnauthorizedError) {
+  if (err instanceof RateLimitError) {
+    res.status(429).json({
+      error: {
+        message: err.message,
+        code: "RATE_LIMIT_ERROR"
+      }
+    });
+  }
+  else if (err instanceof UnauthorizedError) {
     res.status(401).json({
       error: {
         message: "Unauthorized user",
