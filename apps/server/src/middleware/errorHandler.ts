@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 
-import { AppError, RateLimitError, ValidationError } from '../types/errors';
+import { AppError, RateLimitError, ValidationError, UnauthorizedError } from '../types/errors';
 
 interface ErrorResponse {
   error: {
@@ -63,6 +63,14 @@ export const errorHandler = (
         code: "RATE_LIMIT_ERROR"
       }
     });
+  }
+  else if (err instanceof UnauthorizedError) {
+    res.status(401).json({
+      error: {
+        message: "Unauthorized user",
+        code: "UNAUTHORIZED_ERROR"
+      }
+    });
     return;
   }
 
@@ -70,7 +78,7 @@ export const errorHandler = (
   res.status(500).json({
     error: {
       message: 'Internal server error',
-      code: 'INTERNAL_ERROR',
+      code: 'INTERNAL_ERROR'
     },
   });
 };

@@ -51,15 +51,6 @@ function saveToStorage(data: SheetData): void {
   }
 }
 
-function clearStorage(): void {
-  if (typeof window === 'undefined') return;
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // Storage unavailable
-  }
-}
-
 export function TableDataProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<TableDataState>(() => ({
     data: loadFromStorage(),
@@ -68,8 +59,13 @@ export function TableDataProvider({ children }: { children: ReactNode }) {
   }));
 
   const fetchData = useCallback(async () => {
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
+    const cachedData = loadFromStorage();
+    if (cachedData) {
+      setState({ data: cachedData, isLoading: true, error: null });
+    } else {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+    }
+    
     try {
       const response = await fetch(`${API_BASE_URL}/sheets`);
       if (!response.ok) {
@@ -88,12 +84,17 @@ export function TableDataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateData = useCallback(async (rows: string[][]) => {
+    // Capture previous data for rollback
+    let previousData: SheetData | null = null;
+
     setState((prev) => {
+      previousData = prev.data;
       if (!prev.data) return prev;
+
       // Optimistic update
       const optimisticData: SheetData = { ...prev.data, values: rows };
       saveToStorage(optimisticData);
-      return { ...prev, data: optimisticData, error: null };
+      return { data: optimisticData, isLoading: false, error: null };
     });
 
     try {
@@ -110,23 +111,18 @@ export function TableDataProvider({ children }: { children: ReactNode }) {
         throw new Error(`Failed to update: ${response.statusText}`);
       }
     } catch (err) {
-      // Rollback on failure - refetch from API
+      // Rollback to previous state and show error
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to update data';
-      setState((prev) => ({ ...prev, error: errorMessage }));
+      setState({
+        data: previousData,
+        isLoading: false,
+        error: errorMessage,
+      });
 
-      // Attempt to restore from server
-      try {
-        const response = await fetch(`${API_BASE_URL}/sheets`);
-        if (response.ok) {
-          const json = await response.json();
-          const sheetData: SheetData = json.data;
-          saveToStorage(sheetData);
-          setState((prev) => ({ ...prev, data: sheetData }));
-        }
-      } catch {
-        // If rollback also fails, clear cache to force fresh fetch
-        clearStorage();
+      // Restore localStorage to previous state
+      if (previousData) {
+        saveToStorage(previousData);
       }
     }
   }, []);

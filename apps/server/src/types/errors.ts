@@ -31,3 +31,12 @@ export class RateLimitError extends AppError {
     this.name = "RateLimitError";
   }
 }
+
+export class UnauthorizedError extends AppError {
+  public constructor(
+    message: string
+  ) {
+    super(401, `User unauthorized. ${message}`);
+    this.name = 'UnauthorizedError';
+  }
+}
