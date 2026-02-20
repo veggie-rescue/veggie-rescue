@@ -1,13 +1,21 @@
 import type { Request, Response } from 'express';
 import express from 'express';
+import { rateLimit } from './middleware/rateLimit';
+import cors from 'cors';
+import { corsOptions } from './middleware/cors';
 
 import { errorHandler } from './middleware/errorHandler';
+import { authentication } from './middleware/auth';
 import donationRoutes from './routes/donations';
 import sheetsRoutes from './routes/sheets';
 
 const app = express();
+import testing from './routes/testing';
 
 app.use(express.json());
+app.use(rateLimit);
+app.use(cors(corsOptions));
+app.use(authentication);
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Veggie Rescue Server is running!' });
@@ -19,6 +27,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 app.use('/donations', donationRoutes);
 app.use('/sheets', sheetsRoutes);
+app.use("/testing", testing);
 
 app.use(errorHandler);
 
