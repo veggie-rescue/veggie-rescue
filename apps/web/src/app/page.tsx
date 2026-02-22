@@ -1,5 +1,5 @@
 import VeggieCard from '@/components/VeggieCard';
-import Dashboard from '@/components/Dashboard/Dashboard';
+import DataTable from '@/components/DataTable/DataTable';
 import styles from './page.module.scss';
 
 export default function Home() {
@@ -28,8 +28,7 @@ export default function Home() {
           imageEmoji="🍅"
         />
 
-        
-        <Dashboard />
+        <DataTable />
       </section>
     </main>
   );

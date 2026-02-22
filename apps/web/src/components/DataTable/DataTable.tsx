@@ -1,6 +1,6 @@
 import Table from '../Table/Table';
 
-function Dashboard () {
+function DataTable () {
     // mockData will replaced with real data in the future
     const mockData = {
         values: [
@@ -38,4 +38,4 @@ function Dashboard () {
     );
 }
 
-export default Dashboard;
+export default DataTable;
