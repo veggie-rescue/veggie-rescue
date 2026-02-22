@@ -1,7 +1,7 @@
-import React from 'react';
 import Table from '../Table/Table';
 
 function Dashboard () {
+    // mockData will replaced with real data in the future
     const mockData = {
         values: [
             ['Name', 'Age', 'City'],
@@ -21,7 +21,7 @@ function Dashboard () {
     const headers = mockData.values[0];
     const cols = headers.map((header) => ({
         key: header.toLowerCase(),
-        label: header,
+        label: header
     }));
 
     const data = mockData.values.slice(1).map((row) => {
@@ -34,10 +34,7 @@ function Dashboard () {
     })
 
     return (
-        <div>
-            <h1>Table Title</h1>
-            <Table columns = {cols} data = {data}/>
-        </div>
+        <Table columns = {cols} data = {data}/>
     );
 }
 
