@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.scss';
 import { Navbar } from '../components/Navbar';
+import Providers from './providers';
 
 export const metadata: Metadata = {
   title: 'Veggie Rescue',
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar/>
-        {children}
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );

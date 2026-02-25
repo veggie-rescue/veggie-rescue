@@ -3,7 +3,9 @@
 }
 
 .navbar {
+    display: flex;
     background-color: var(--primary-color);
+    height: 3rem;
 }
 
 .navbarContent {
