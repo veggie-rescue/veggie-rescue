@@ -30,7 +30,18 @@
     display: flex;
     gap: 1rem;
     padding: 0 0 0 1rem;
+    align-items: center;
 }
 
 
+.navLink {
+    padding: 0px;
+    border-radius: 1000px;
+    transition: all .25s linear .05s;
+}
 
+.activeLink {
+    background-color: rgba($color: white, $alpha: .2);
+    padding: 10px 12px;
+    border-radius: 1000px;
+}
