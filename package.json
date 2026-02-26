@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
@@ -12,8 +15,9 @@
     "clean": "turbo clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "turbo": "^2.4.4",
-    "prettier": "^3.8.0"
+    "@types/react": "^19.2.14",
+    "prettier": "^3.8.0",
+    "turbo": "^2.4.4"
   },
   "packageManager": "npm@10.8.0"
 }

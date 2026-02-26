@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.scss';
+import { Navbar } from '../components/Navbar';
 
 export const metadata: Metadata = {
   title: 'Veggie Rescue',
@@ -13,7 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Navbar/>
+        {children}
+      </body>
     </html>
   );
 }
