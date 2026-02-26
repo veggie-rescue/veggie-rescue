@@ -1,4 +1,3 @@
-import VeggieCard from '@/components/VeggieCard';
 import DataTable from '@/components/DataTable/DataTable';
 import styles from './page.module.scss';
 
