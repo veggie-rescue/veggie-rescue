@@ -1,4 +1,5 @@
 import VeggieCard from '@/components/VeggieCard';
+import DataTable from '@/components/DataTable/DataTable';
 import styles from './page.module.scss';
 
 export default function Home() {
@@ -26,6 +27,8 @@ export default function Home() {
           daysUntilExpiry={1}
           imageEmoji="🍅"
         />
+
+        <DataTable />
       </section>
     </main>
   );
