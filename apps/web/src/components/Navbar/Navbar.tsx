@@ -1,8 +1,13 @@
+'use client'
+
 import Link from "next/link";
 import styles from "./Navbar.module.scss";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
+    const path = usePathname();
+
     return (
         <header className={styles.navbar}>
             <div className={styles.navbarContent}> 
@@ -17,8 +22,12 @@ export const Navbar = () => {
                 </div>
 
                 <nav className={styles.navLinks} aria-label="Primary"> 
-                    <Link href="/dashboard" className={styles.navLink}> Dashboard </Link>
+                    <Link href="/dashboard" className={`${styles.navLink} ${path === "/dashboard" ? styles.activeLink : ""}`}> Dashboard </Link>
+                    <Link href="/deliveries" className={`${styles.navLink} ${path === "/deliveries" ? styles.activeLink : ""}`}> Deliveries </Link>
+                    <Link href="/recipients" className={`${styles.navLink} ${path === "/recipients" ? styles.activeLink : ""}`}> Recipients </Link>
                 </nav>
+
+                
             </div>
         </header>
     )
