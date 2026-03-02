@@ -9,6 +9,9 @@ import {
   type ReactNode,
 } from 'react';
 
+import { useAuth } from './AuthContext';
+import { useRouter } from 'next/navigation';
+
 // Google Sheets API response format
 export interface SheetData {
   range: string;
@@ -29,8 +32,20 @@ interface TableDataContextValue extends TableDataState {
 
 const STORAGE_KEY = 'veggie-rescue-table-data';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const ACCESS_CODE_KEY = 'accessCode';
 
 const TableDataContext = createContext<TableDataContextValue | null>(null);
+
+function getAuthHeader(): { Authorization: string } {
+  const accessCode = localStorage.getItem(ACCESS_CODE_KEY);
+
+  if (!accessCode) {
+    throw new Error('Missing access code. Please log in again.');
+  }
+
+  return { Authorization: `Bearer ${accessCode}` };
+}
+
 
 function loadFromStorage(): SheetData | null {
   if (typeof window === 'undefined') return null;
@@ -52,11 +67,19 @@ function saveToStorage(data: SheetData): void {
 }
 
 export function TableDataProvider({ children }: { children: ReactNode }) {
+  const { logout } = useAuth();
+  const router = useRouter();
   const [state, setState] = useState<TableDataState>(() => ({
     data: loadFromStorage(),
     isLoading: false,
     error: null,
   }));
+
+  const handleUnauthorized = useCallback(() => {
+  logout(); // clears token + auth flag
+  localStorage.removeItem(STORAGE_KEY); // optional: clear cached sheets data
+  router.replace('/'); // access-code page
+}, [logout, router]);
 
   const fetchData = useCallback(async () => {
     const cachedData = loadFromStorage();
@@ -67,7 +90,15 @@ export function TableDataProvider({ children }: { children: ReactNode }) {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/sheets`);
+      const response = await fetch(`${API_BASE_URL}/sheets`, {
+        headers: {
+          ...getAuthHeader(),
+        }
+      });
+      if (response.status === 401) {
+        handleUnauthorized();
+        return;
+      }
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }
@@ -81,7 +112,7 @@ export function TableDataProvider({ children }: { children: ReactNode }) {
         err instanceof Error ? err.message : 'Failed to fetch data';
       setState((prev) => ({ ...prev, isLoading: false, error: errorMessage }));
     }
-  }, []);
+  }, [handleUnauthorized]);
 
   const updateData = useCallback(async (rows: string[][]) => {
     // Capture previous data for rollback
@@ -103,9 +134,17 @@ export function TableDataProvider({ children }: { children: ReactNode }) {
 
       const response = await fetch(`${API_BASE_URL}/sheets`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+         },
         body: JSON.stringify({ ...currentData, values: rows }),
       });
+
+      if (response.status === 401) {
+        handleUnauthorized();
+        return;
+      }   
 
       if (!response.ok) {
         throw new Error(`Failed to update: ${response.statusText}`);
@@ -125,7 +164,7 @@ export function TableDataProvider({ children }: { children: ReactNode }) {
         saveToStorage(previousData);
       }
     }
-  }, []);
+  }, [handleUnauthorized]);
 
   const value = useMemo(
     () => ({
