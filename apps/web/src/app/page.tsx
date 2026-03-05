@@ -2,27 +2,37 @@
 import Image from "next/image";
 import Styles from "./page.module.scss";
 import { useState } from "react";
-import { useAuth } from "@/context/AuthContext"; 
 import { useRouter } from "next/navigation";
 
-
-
 export default function Access() {
-const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();  
   const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const ok = login(password);
-    if (ok) {
-      setError("");
-      router.replace("/dashboard");
-      return;
+    setError("");
+
+    const res = await fetch("http://localhost:3000/sheets", {
+        method: "GET", 
+        headers: {
+            Authorization: `Bearer ${password}`,
+        },
+    });
+
+    if (res.ok) {
+        localStorage.setItem("accessCode", password);
+        router.replace("/dashboard");
+        return;
     }
-    setError("Invalid access code");
+
+    if(res.status === 401) {
+        setError("Invalid access code");
+        return;
+    }
+    setError("An unexpected error occurred. Please try again.");
   }
+
     return (
         <main className={Styles.page}>
             <div className={Styles.card}>
