@@ -3,25 +3,35 @@ import Image from "next/image";
 import Styles from "./page.module.scss";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function Access() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { login } = useAuth();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
 
-    const res = await fetch("http://localhost:3000/sheets", {
+    const trimmedPassword = password.trim();
+    if (!trimmedPassword) {
+      setError("Please enter the access code.");
+      return;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/sheets`, {
         method: "GET", 
         headers: {
-            Authorization: `Bearer ${password}`,
+            Authorization: `Bearer ${trimmedPassword}`,
         },
     });
 
     if (res.ok) {
-        localStorage.setItem("accessCode", password);
+        login(trimmedPassword);
         router.replace("/dashboard");
         return;
     }

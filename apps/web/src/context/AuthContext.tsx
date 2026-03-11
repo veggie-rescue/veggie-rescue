@@ -2,12 +2,12 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-
 type AuthContextValue = {
     isAuthenticated: boolean;
     isHydrated: boolean;
     login: (accessCode: string) => boolean;
     logout: () => void;
+    getAccessCode: () => string | null;
 };
 
 const ACCESS_CODE_KEY = "accessCode";
@@ -37,8 +37,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
     const login = (accessCode: string) => {
         const trimmed = accessCode.trim();
-        const ok = trimmed === accessCode;
-        if (!ok) return false;
+        
+        if (!trimmed) return false;
 
         sessionStorage.setItem(AUTH_FLAG_KEY, "true");
         localStorage.setItem(ACCESS_CODE_KEY, trimmed);
