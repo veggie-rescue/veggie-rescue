@@ -1,14 +1,9 @@
 import Table from '../Table/Table';
 import styles from './DataTable.module.scss';
 
-// TableProps are populated from SheetData
-    // SheetData has the form of string[][] where
-    // the first entry is the headers, and subsequent ones are
-    // the data; they must be converted to Record<string,string>
-    // prior to being passed into the component
 interface TableProps {
-    readonly headers: string[]; // headers
-    readonly data: Record<string, string>[]; // spreadsheet values
+    readonly headers: string[];
+    readonly data: Record<string, string>[];
 }
 
 export function DataTable ({headers, data} : TableProps) {
@@ -34,26 +29,8 @@ export function DataTable ({headers, data} : TableProps) {
         )
     }
 
-    // Creates column headers
-        // Assumes that all rows of data have the same headers
-    const keyedHeaders = headers.map((header) => ({
-        key: header.toLowerCase(),
-        label: header
-    }));
-
-    // Create rows
-    const rowData = data.map((row) => {
-        const rowObject: Record<string, any> = {};
-
-        Object.keys(row).forEach((key) => {
-            rowObject[key] = row[key];
-        });
-
-        return rowObject;
-    })
-
     return (
-        <Table columns = {keyedHeaders} data = {rowData}/>
+        <Table columns = {headers} data = {data}/>
     );
 }
 

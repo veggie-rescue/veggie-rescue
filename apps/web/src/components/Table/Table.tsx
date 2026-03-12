@@ -1,16 +1,11 @@
 import styles from './Table.module.scss';
 
-interface Column {
-    key: string;
-    label: string;
-}
-
 interface DataRow {
     [key: string]: any;
 }
 
 interface TableProps {
-    columns: Column[];
+    columns: string[];
     data: DataRow[];
 }
 
@@ -21,8 +16,8 @@ function Table ({columns, data} : TableProps) {
                 <thead>
                     <tr>
                         {columns.map((column) => (
-                            <th key={column.key}>
-                                {column.label}
+                            <th key={column}>
+                                {column}
                             </th>
                         ))}
                     </tr>
@@ -31,8 +26,8 @@ function Table ({columns, data} : TableProps) {
                     {data.map((row, rowIndex) => (
                         <tr key={rowIndex}>
                             {columns.map((column) => (
-                                <td key={column.key}>
-                                    {row[column.key]}
+                                <td key={column}>
+                                    {row[column]}
                                 </td>
                             ))}
                         </tr>

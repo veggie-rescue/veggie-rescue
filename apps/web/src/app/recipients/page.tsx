@@ -3,27 +3,56 @@ import { useState, useEffect } from 'react';
 import { DataTable } from '@/components/DataTable/DataTable';
 
 export default function Recipients() {
+    // Loading and Error states
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+
+    // Fetch data
     const [sheetData, setSheetData] = useState([]);
 
     useEffect(() => {
         // TODO: adjust fetch route when the backend route changes
         async function fetchData() {
-            const res = await fetch('http://localhost:3000/testing');
-            const data = await res.json();
+            try {
+                const res = await fetch('http://localhost:3000/testing');
 
-            setSheetData(data);
+                if (!res.ok) {
+                    throw new Error('HTTP error. Could not fetch data.');
+                }
+
+                const data = await res.json();
+                setSheetData(data);
+            }
+            catch (err) {
+                setError(true);
+            }
+            finally {
+                setLoading(false);
+            }
         }
 
         fetchData();
     }, []);
 
-    // Ensure that the sheet data was fetched propely
-    if (!sheetData || sheetData.length <= 0) {
+    // Loading state
+    if (loading) {
         return (
-            <DataTable headers={['No Data Found.']} data={[]} />
-        )
+            <>
+                <p>Loading...</p>
+            </>
+        );
     }
 
+    // Error state
+    if (error) {
+        return (
+            <>
+                <p>Failed to fetch data.</p>
+            </>
+        );
+    }
+
+    // Pull headers from the objects
     const headers = Object.keys(sheetData[0]);
 
     return (
