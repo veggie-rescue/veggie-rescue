@@ -5,7 +5,7 @@ import { DataTable } from '@/components/DataTable/DataTable';
 export default function Recipients() {
     // Loading and Error states
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // Fetch data
     const [sheetData, setSheetData] = useState([]);
@@ -24,7 +24,7 @@ export default function Recipients() {
                 setSheetData(data);
             }
             catch (err) {
-                setError(true);
+                setError(err instanceof Error ? err.message : 'Unknown Error');
             }
             finally {
                 setLoading(false);
@@ -53,6 +53,14 @@ export default function Recipients() {
     }
 
     // Pull headers from the objects
+    if (sheetData.length <= 0) {
+        return (
+            <p>
+                No Data Found.
+            </p>
+        )
+    }
+
     const headers = Object.keys(sheetData[0]);
 
     return (

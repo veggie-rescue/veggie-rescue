@@ -14,9 +14,11 @@ export function DataTable ({headers, data} : TableProps) {
             <div className={styles.tableContainer}>
                 <table className={styles.table}>
                     <thead>
-                        {headers.map((header) => {
-                            return (<th>{header}</th>)
-                        })}
+                        <tr>
+                            {headers.map((header) => {
+                                return (<th key={header}>{header}</th>)
+                            })}
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
