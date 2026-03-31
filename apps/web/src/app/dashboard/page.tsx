@@ -1,4 +1,3 @@
-import DataTable from '@/components/DataTable/DataTable';
 import styles from './page.module.scss';
 
 export default function Home() {
@@ -8,7 +7,6 @@ export default function Home() {
       <p className={styles.description}>Rescuing vegetables, reducing waste.</p>
 
       <section className={styles.grid}></section>
-      <DataTable />
     </main>
   );
 }
