@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import VeggieCard from '@/components/VeggieCard';
 import { useAuth } from '@/context/AuthContext';
 import { useTableData } from '@/context/TableDataContext';
 import DataTable from '@/components/DataTable/DataTable';
@@ -39,7 +38,7 @@ export default function Home() {
   }));
 
   const rows = values.slice(1).map((row) => {
-    const rowObject: Record<string, any> = {};
+    const rowObject: Record<string, string> = {};
 
     headers.forEach((header, index) => {
       const key = header.toLowerCase();
