@@ -4,6 +4,7 @@
   max-width: 100%;
   max-height: calc(100vh - 14rem);
   overflow: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--color-border);
   border-radius: 1rem;
   background-color: var(--color-surface);
@@ -12,8 +13,8 @@
 
 // Base table styles
 .table {
-  width: 100%;
-  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   font-family: inherit;
 
@@ -28,10 +29,8 @@
       padding: 0.95rem 0.85rem;
       border-bottom: 2px solid var(--color-border);
       z-index: 10;
-      font-size: 0.95rem;
-      line-height: 1.25;
       white-space: normal;
-      overflow-wrap: anywhere;
+      vertical-align: bottom;
     }
   }
 
@@ -42,7 +41,7 @@
       border-bottom: 1px solid rgb(222 201 162 / 70%);
       font-size: 0.95rem;
       white-space: normal;
-      overflow-wrap: anywhere;
+      vertical-align: top;
     }
 
     // Zebra striping
@@ -54,11 +53,54 @@
     tr:hover {
       background-color: rgb(125 213 108 / 18%);
     }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
   }
 }
 
-@media (width <= 900px) {
+.sortButton {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sortIndicator {
+  min-width: 1rem;
+  text-align: right;
+  color: rgb(18 14 5 / 70%);
+}
+
+@media (width <= 640px) {
+  .tableContainer {
+    max-height: calc(100vh - 12rem);
+  }
+
   .table {
-    table-layout: auto;
+    min-width: 30rem;
+
+    thead {
+      th {
+        padding: 0.8rem 0.75rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    tbody {
+      td {
+        padding: 0.8rem 0.75rem;
+        font-size: 0.9rem;
+      }
+    }
   }
 }

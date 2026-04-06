@@ -1,13 +1,14 @@
- 'use client';
+'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useTableData } from '@/context/TableDataContext';
 import DataTable from '@/components/DataTable/DataTable';
+import TableState from '@/components/TableState/TableState';
 import styles from './page.module.scss';
 
-export default function Home() {
+export default function DashboardPage() {
   const { data, isLoading, error, fetchData } = useTableData();
   const { isAuthenticated, isHydrated } = useAuth();
   const router = useRouter();
@@ -25,32 +26,90 @@ export default function Home() {
     void fetchData();
   }, [fetchData, isAuthenticated, isHydrated, router]);
 
-  if (!isHydrated) return <p>Loading data...</p>;
-  if (!isAuthenticated) return <p>Redirecting to login...</p>;
-
   const values = data?.values ?? [];
-
   const headers = values[0] ?? [];
+  const rows = values.slice(1);
+
+  if (!isHydrated) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Dashboard</h1>
+        </div>
+        <TableState
+          variant="loading"
+          title="Loading dashboard"
+          message="Checking access and preparing your dashboard view."
+        />
+      </main>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  if (isLoading && !values.length) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Dashboard</h1>
+        </div>
+        <TableState
+          variant="loading"
+          title="Loading dashboard"
+          message="Fetching the latest sheet data for this view."
+        />
+      </main>
+    );
+  }
+
+  if (error && !values.length) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Dashboard</h1>
+        </div>
+        <TableState
+          variant="error"
+          title="Unable to load dashboard"
+          message={error}
+          actionLabel="Try again"
+          onAction={() => void fetchData()}
+        />
+      </main>
+    );
+  }
+
+  if (!headers.length || !rows.length) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Dashboard</h1>
+        </div>
+        <TableState
+          variant="empty"
+          title="No dashboard data"
+          message="This table is empty right now. Check back after more data is added."
+        />
+      </main>
+    );
+  }
 
   const columns = headers.map((header) => ({
     key: header.toLowerCase(),
     label: header,
   }));
 
-  const rows = values.slice(1).map((row) => {
+  const tableRows = rows.map((row) => {
     const rowObject: Record<string, string> = {};
 
     headers.forEach((header, index) => {
-      const key = header.toLowerCase();
-      rowObject[key] = row[index];
+      rowObject[header.toLowerCase()] = row[index] ?? '';
     });
 
     return rowObject;
   });
-
-  if (isLoading) return <p>Loading data...</p>;
-  if (error) return <p>Error loading data: {error}</p>;
-  if (!values.length) return <p>No data available</p>;
 
   return (
     <main className={styles.main}>
@@ -59,7 +118,14 @@ export default function Home() {
       </div>
 
       <section className={styles.tableSection}>
-        <DataTable columns={columns} data={rows} />
+        {isLoading ? (
+          <p className={styles.statusBanner}>Refreshing data...</p>
+        ) : error ? (
+          <p className={`${styles.statusBanner} ${styles.statusBannerWarning}`}>
+            Showing saved data. Latest fetch failed.
+          </p>
+        ) : null}
+        <DataTable columns={columns} data={tableRows} />
       </section>
     </main>
   );
