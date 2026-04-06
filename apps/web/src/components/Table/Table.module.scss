@@ -1,48 +1,64 @@
 // Container of table
 .tableContainer {
-  max-height: 300px;
-  min-width: 900px;
+  width: 100%;
+  max-width: 100%;
+  max-height: calc(100vh - 14rem);
   overflow: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-soft);
 }
 
 // Base table styles
 .table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
-  font-family: Arial, sans-serif;
+  font-family: inherit;
 
   // Header styles
   thead {
     th {
       position: sticky;
       top: 0;
-      background-color: #f8f9fa;
+      background-color: var(--color-primary-base);
+      color: var(--color-text);
       text-align: left;
-      padding: 12px 16px;
-      border-bottom: 2px solid #dee2e6;
+      padding: 0.95rem 0.85rem;
+      border-bottom: 2px solid var(--color-border);
       z-index: 10;
-      white-space: nowrap;
+      font-size: 0.95rem;
+      line-height: 1.25;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
   }
 
   // Body styles
   tbody {
     td {
-      padding: 12px 16px;
-      border-bottom: 1px solid #DBD0D0;
-      white-space: nowrap;
+      padding: 0.95rem 0.85rem;
+      border-bottom: 1px solid rgb(222 201 162 / 70%);
+      font-size: 0.95rem;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
 
     // Zebra striping
     tr:nth-child(even) {
-      background-color: #EDEDED;
+      background-color: rgb(179 223 142 / 14%);
     }
 
     // Hover effect
     tr:hover {
-      background-color: #e9ecef;
+      background-color: rgb(125 213 108 / 18%);
     }
+  }
+}
+
+@media (width <= 900px) {
+  .table {
+    table-layout: auto;
   }
 }

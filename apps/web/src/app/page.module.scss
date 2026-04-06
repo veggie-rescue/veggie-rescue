@@ -1,64 +1,167 @@
 .page {
-    min-height: calc(100vh - 3rem);
-    min-width: 100vh;
-    display: grid;
-    place-items: center;
+  min-height: calc(100vh - 4.25rem);
+  min-width: 100%;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  background:
+    radial-gradient(circle at top, rgb(179 223 142 / 26%), transparent 34%),
+    var(--color-background);
 }
 
 .page .card {
-    background-color: #fff;
-    border-radius: 12px;
-    flex-direction: column;
-    align-items: center;
-    max-width: 280px;
-    padding: 1.5rem;
-    transition: transform .2s, box-shadow .2s;
-    display: flex;
-    box-shadow: 0 2px 8px #0000001a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 22rem);
+  padding: 2rem 1.75rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
 }
 
-.image { 
-    display: flex;
-    justify-content: center;
-    margin-bottom: 0.5rem;
+.logoShell {
+  display: grid;
+  place-items: center;
+  width: 8.25rem;
+  height: 8.25rem;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at top, rgb(251 247 240 / 96%), rgb(243 234 216 / 92%));
+  box-shadow:
+    0 12px 28px rgb(18 14 5 / 10%),
+    inset 0 1px 0 rgb(255 255 255 / 72%);
+  margin-bottom: 0.35rem;
 }
 
-.textbox, .submitButton {
-    border-radius: 0.5rem;
-    height: 1.5rem;
-    border-color: grey;
-    border-width: 1.4px;
-        padding: 0.5rem;
+.image {
+  display: block;
+  width: auto;
+  max-width: 6.1rem;
+  max-height: 6.1rem;
+  height: auto;
+  margin-inline: auto;
+  object-fit: contain;
+}
 
+.brandBlock {
+  text-align: center;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.75rem;
+}
+
+.inputWrap {
+  position: relative;
+  width: 100%;
+}
+
+.textbox,
+.submitButton {
+  min-height: 2.75rem;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.9rem;
+}
+
+.textbox {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  color: var(--color-text);
+  padding-right: 3.25rem;
+
+  &:focus {
+    outline: 2px solid rgb(125 213 108 / 28%);
+    border-color: var(--color-accent);
+  }
+}
+
+.eyeButton {
+  position: absolute;
+  top: 50%;
+  right: 0.6rem;
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  img {
+    width: 1.3rem;
+    height: 1.3rem;
+    object-fit: contain;
+  }
+
+  &:hover {
+    background-color: rgb(229 154 70 / 14%);
+    color: var(--color-text);
+  }
 }
 
 .submitButton {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: .375rem .75rem;
-    font-size: .75rem;
+  border: none;
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--color-primary-base);
+    box-shadow: 0 10px 18px rgb(203 157 74 / 28%);
+    transform: translateY(-1px);
+  }
 }
 
 input::placeholder {
-    font-size: 0.8rem; 
-    color: #999; 
-    font-style: italic; 
-    opacity: 1;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  font-style: italic;
+  opacity: 1;
 }
 
 .error {
-    color: red;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    padding-top: 0.25rem;
+  color: var(--color-danger);
+  margin-top: -0.25rem;
+  font-size: 0.9rem;
+  text-align: center;
 }
-

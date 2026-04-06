@@ -20,7 +20,7 @@ import styles from './DataTable.module.scss';
 
     type DataTableProps = {
         columns : {key: string, label: string}[];
-        data: Record<string, any>[];
+        data: Record<string, string>[];
     };
 
     function DataTable({ columns, data }: DataTableProps) {

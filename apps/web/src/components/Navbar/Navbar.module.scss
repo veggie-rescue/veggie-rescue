@@ -1,47 +1,85 @@
-:root {
-    --primary-color: #ff9d5c;
-}
-
 .navbar {
-    display: flex;
-    background-color: var(--primary-color);
-    height: 3rem;
+  display: flex;
+  justify-content: center;
+  background-color: var(--color-primary);
+  border-bottom: 1px solid rgb(18 14 5 / 12%);
+  box-shadow: 0 10px 24px rgb(18 14 5 / 9%);
 }
 
 .navbarContent {
-    display: flex;
-    align-items: center;
-    padding: 1rem 2rem 1rem 1rem;
-    background-color: var(--primary-color);
-    color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(100%, 1200px);
+  min-height: 4.5rem;
+  padding: 0.75rem 1.5rem;
+  gap: 1rem;
+  color: var(--color-text);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
 }
 
 .logoWrap {
+  flex-shrink: 0;
   position: relative;
-  width: 3rem;
-  height: 3rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at top, rgb(251 247 240 / 92%), rgb(251 247 240 / 55%));
+  box-shadow:
+    0 10px 24px rgb(18 14 5 / 12%),
+    inset 0 1px 0 rgb(255 255 255 / 55%);
 }
 
 .logo {
-    object-fit: contain;
+  object-fit: contain;
+  padding: 0.4rem;
+}
+
+.brandText {
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 .navLinks {
-    display: flex;
-    gap: 1rem;
-    padding: 0 0 0 1rem;
-    align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
-
 .navLink {
-    padding: 0px;
-    border-radius: 1000px;
-    transition: all .25s linear .05s;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 600;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background-color: rgb(251 247 240 / 45%);
+    transform: translateY(-1px);
+  }
 }
 
 .activeLink {
-    background-color: rgba($color: white, $alpha: .2);
-    padding: 10px 12px;
-    border-radius: 1000px;
+  background-color: rgb(251 247 240 / 72%);
+}
+
+@media (width <= 640px) {
+  .navbarContent {
+    padding-inline: 1rem;
+  }
+
+  .brandText {
+    display: none;
+  }
 }
