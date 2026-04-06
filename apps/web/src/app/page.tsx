@@ -25,7 +25,7 @@ export default function Access() {
     }
 
     const res = await fetch(`${API_BASE_URL}/sheets`, {
-        method: "GET", 
+        method: "GET",
         headers: {
             Authorization: `Bearer ${trimmedPassword}`,
         },
@@ -90,7 +90,7 @@ export default function Access() {
                             </button>
                         </div>
                         <button className={Styles.submitButton} type="submit"> Submit </button>
-                    </form> 
+                    </form>
                     {error && <p className={Styles.error}>{error}</p>}
 
                 </div>

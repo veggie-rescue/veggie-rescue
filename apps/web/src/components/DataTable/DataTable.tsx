@@ -1,4 +1,5 @@
 import Table from '../Table/Table';
+import styles from './DataTable.module.scss';
 
     // mockData will replaced with real data in the future
     // const mockData = {

@@ -1,0 +1,48 @@
+// Container of table
+.tableContainer {
+  max-height: 300px;
+  min-width: 900px;
+  overflow: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+// Base table styles
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+
+  // Header styles
+  thead {
+    th {
+      position: sticky;
+      top: 0;
+      background-color: #f8f9fa;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid #dee2e6;
+      z-index: 10;
+      white-space: nowrap;
+    }
+  }
+
+  // Body styles
+  tbody {
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #DBD0D0;
+      white-space: nowrap;
+    }
+
+    // Zebra striping
+    tr:nth-child(even) {
+      background-color: #EDEDED;
+    }
+
+    // Hover effect
+    tr:hover {
+      background-color: #e9ecef;
+    }
+  }
+}

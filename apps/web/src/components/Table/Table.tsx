@@ -16,7 +16,7 @@ interface TableProps {
 
 function Table ({columns, data} : TableProps) {
     return (
-        <div className = {styles.tableContainer}> 
+        <div className = {styles.tableContainer}>
             <table className = {styles.table}>
                 <thead>
                     <tr>
