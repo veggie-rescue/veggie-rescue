@@ -24,7 +24,7 @@ export default function Access() {
     }
 
     const res = await fetch(`${API_BASE_URL}/sheets`, {
-        method: "GET", 
+        method: "GET",
         headers: {
             Authorization: `Bearer ${trimmedPassword}`,
         },
@@ -48,16 +48,16 @@ export default function Access() {
             <div className={Styles.card}>
                 <div className={Styles.container}>
                     <Image src="/TODO-logo.png" alt="Access Image" className={Styles.image} width={15} height={15}/>
-                    <form 
-                        className={Styles.form} 
+                    <form
+                        className={Styles.form}
                         onSubmit={handleSubmit}>
-                        <input 
-                            className={Styles.textbox} 
-                            placeholder="Enter password"               
-                            onChange={(e) => setPassword(e.target.value)}>                        
+                        <input
+                            className={Styles.textbox}
+                            placeholder="Enter password"
+                            onChange={(e) => setPassword(e.target.value)}>
                         </input>
                         <button className={Styles.submitButton} type="submit"> Submit </button>
-                    </form> 
+                    </form>
                     {error && <p className={Styles.error}>{error}</p>}
 
                 </div>
