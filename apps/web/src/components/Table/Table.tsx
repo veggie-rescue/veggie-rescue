@@ -6,7 +6,7 @@ interface Column {
 }
 
 interface DataRow {
-    [key: string]: any;
+    [key: string]: string;
 }
 
 interface TableProps {

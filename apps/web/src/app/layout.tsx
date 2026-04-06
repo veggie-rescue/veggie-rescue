@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.scss';
-import { Navbar } from '../components/Navbar';
 import Providers from './providers';
+import { AppShell } from '@/components/AppShell/AppShell';
 
 export const metadata: Metadata = {
   title: 'Veggie Rescue',
@@ -17,8 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <Navbar />
-          {children}
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>

@@ -10,24 +10,25 @@ export const Navbar = () => {
 
     return (
         <header className={styles.navbar}>
-            <div className={styles.navbarContent}> 
-                <div className={styles.logoWrap}>
-                    <Image 
-                        className={styles.logo} 
-                        src={"/veggie-rescue-logo.png"}
-                        alt="ToDo"
-                        fill
-                        priority
-                    />
-                </div>
+            <div className={styles.navbarContent}>
+                <Link href="/dashboard" className={styles.brand}>
+                    <div className={styles.logoWrap}>
+                        <Image
+                            className={styles.logo}
+                            src={"/veggie-rescue-logo.png"}
+                            alt="Veggie Rescue logo"
+                            fill
+                            priority
+                        />
+                    </div>
+                    <span className={styles.brandText}>Veggie Rescue</span>
+                </Link>
 
-                <nav className={styles.navLinks} aria-label="Primary"> 
+                <nav className={styles.navLinks} aria-label="Primary">
                     <Link href="/dashboard" className={`${styles.navLink} ${path === "/dashboard" ? styles.activeLink : ""}`}> Dashboard </Link>
                     <Link href="/deliveries" className={`${styles.navLink} ${path === "/deliveries" ? styles.activeLink : ""}`}> Deliveries </Link>
                     <Link href="/recipients" className={`${styles.navLink} ${path === "/recipients" ? styles.activeLink : ""}`}> Recipients </Link>
                 </nav>
-
-                
             </div>
         </header>
     )

@@ -4,14 +4,15 @@
   align-items: center;
   padding: 1.5rem;
   border-radius: 12px;
-  background-color: #fff;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   max-width: 280px;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
+    box-shadow: 0 18px 32px rgb(18 14 5 / 14%);
   }
 }
 
@@ -24,12 +25,12 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #2d3436;
+  color: var(--color-text);
 }
 
 .description {
   font-size: 0.875rem;
-  color: #636e72;
+  color: var(--color-muted);
   text-align: center;
   margin-bottom: 1rem;
 }
@@ -42,16 +43,16 @@
 }
 
 .fresh {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: rgb(125 213 108 / 18%);
+  color: #215c15;
 }
 
 .warning {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: rgb(211 154 56 / 18%);
+  color: #765111;
 }
 
 .urgent {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: rgb(166 63 45 / 16%);
+  color: #8f2c1b;
 }

@@ -19,7 +19,7 @@ import Table from '../Table/Table';
 
     type DataTableProps = {
         columns : {key: string, label: string}[];
-        data: Record<string, any>[];
+        data: Record<string, string>[];
     };
 
     function DataTable({ columns, data }: DataTableProps) {

@@ -54,11 +54,13 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <h1 className={styles.title}>Veggie Rescue</h1>
-      <p className={styles.description}>Rescuing vegetables, reducing waste.</p>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Dashboard</h1>
+      </div>
 
-      <section className={styles.grid}></section>
-      <DataTable columns={columns} data={rows} />
+      <section className={styles.tableSection}>
+        <DataTable columns={columns} data={rows} />
+      </section>
     </main>
   );
 }
