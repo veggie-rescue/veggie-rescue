@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { DataTable } from '@/components/DataTable/DataTable';
+import DataTable from '@/components/DataTable/DataTable';
 
 export default function Recipients() {
     // Loading and Error states
@@ -62,11 +62,15 @@ export default function Recipients() {
     }
 
     const headers = Object.keys(sheetData[0]);
+    const columns = headers.map((header) => ({
+        key: header,
+        label: header,
+    }));
 
     return (
         <>
             <h1>Recipients</h1>
-            <DataTable headers={headers} data={sheetData} />
+            <DataTable columns={columns} data={sheetData} />
         </>
     );
 }

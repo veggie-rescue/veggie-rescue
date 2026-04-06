@@ -1,39 +1,30 @@
 import Table from '../Table/Table';
 import styles from './DataTable.module.scss';
 
-interface TableProps {
-    readonly headers: string[];
-    readonly data: Record<string, string>[];
-}
+    // mockData will replaced with real data in the future
+    // const mockData = {
+    //     values: [
+    //         ['Name', 'Age', 'City'],
+    //         ['Alice', '30', 'New York'],
+    //         ['Bob', '25', 'San Francisco'],
+    //         ['Charlie', '35', 'London'],
+    //         ['Diana', '28', 'Tokyo'],
+    //         ['Eve', '32', 'Paris'],
+    //         ['Frank', '29', 'Berlin'],
+    //         ['Grace', '31', 'Sydney'],
+    //         ['Henry', '27', 'Toronto'],
+    //         ['Iris', '33', 'Amsterdam'],
+    //         ['Jack', '26', 'Seoul'],
+    //     ]
+    // };
 
-export function DataTable ({headers, data} : TableProps) {
-    // Ensure that the data isn't empty
-        // There is edge case where an empty object may exist in the array
-    if (data.length <= 0 || Object.keys(data[0]).length <= 0) {
-        return (
-            <div className={styles.tableContainer}>
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            {headers.map((header) => {
-                                return (<th key={header}>{header}</th>)
-                            })}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colSpan={headers.length}>{"Data Not Found."}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-        )
+    type DataTableProps = {
+        columns : {key: string, label: string}[];
+        data: Record<string, any>[];
+    };
+
+    function DataTable({ columns, data }: DataTableProps) {
+        return <Table columns={columns} data={data} />;
     }
-
-    return (
-        <Table columns = {headers} data = {data}/>
-    );
-}
 
 export default DataTable;
