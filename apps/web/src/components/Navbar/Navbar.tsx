@@ -1,12 +1,24 @@
-'use client'
+'use client';
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./Navbar.module.scss";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
+const navItems = [
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/deliveries", label: "Deliveries" },
+    { href: "/recipients", label: "Recipients" },
+];
+
 export const Navbar = () => {
     const path = usePathname();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    useEffect(() => {
+        setIsMenuOpen(false);
+    }, [path]);
 
     return (
         <header className={styles.navbar}>
@@ -24,10 +36,36 @@ export const Navbar = () => {
                     <span className={styles.brandText}>Veggie Rescue</span>
                 </Link>
 
-                <nav className={styles.navLinks} aria-label="Primary">
-                    <Link href="/dashboard" className={`${styles.navLink} ${path === "/dashboard" ? styles.activeLink : ""}`}> Dashboard </Link>
-                    <Link href="/deliveries" className={`${styles.navLink} ${path === "/deliveries" ? styles.activeLink : ""}`}> Deliveries </Link>
-                    <Link href="/recipients" className={`${styles.navLink} ${path === "/recipients" ? styles.activeLink : ""}`}> Recipients </Link>
+                <button
+                    type="button"
+                    className={styles.menuButton}
+                    aria-expanded={isMenuOpen}
+                    aria-controls="primary-navigation"
+                    aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                    onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
+                >
+                    <span className={styles.menuButtonText}>Menu</span>
+                    <span className={styles.menuIcon} aria-hidden="true">
+                        <span className={styles.menuLine} />
+                        <span className={styles.menuLine} />
+                        <span className={styles.menuLine} />
+                    </span>
+                </button>
+
+                <nav
+                    id="primary-navigation"
+                    className={`${styles.navLinks} ${isMenuOpen ? styles.navLinksOpen : ""}`}
+                    aria-label="Primary"
+                >
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`${styles.navLink} ${path === item.href ? styles.activeLink : ""}`}
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
                 </nav>
             </div>
         </header>

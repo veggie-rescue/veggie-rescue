@@ -1,76 +1,70 @@
-"use client";
+'use client';
 import { useState, useEffect } from 'react';
 import DataTable from '@/components/DataTable/DataTable';
 
 export default function Recipients() {
-    // Loading and Error states
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  // Loading and Error states
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    // Fetch data
-    const [sheetData, setSheetData] = useState([]);
+  // Fetch data
+  const [sheetData, setSheetData] = useState([]);
 
-    useEffect(() => {
-        // TODO: adjust fetch route when the backend route changes
-        async function fetchData() {
-            try {
-                const res = await fetch('http://localhost:3000/testing');
+  useEffect(() => {
+    // TODO: adjust fetch route when the backend route changes
+    async function fetchData() {
+      try {
+        const res = await fetch('http://localhost:3000/testing');
 
-                if (!res.ok) {
-                    throw new Error('HTTP error. Could not fetch data.');
-                }
-
-                const data = await res.json();
-                setSheetData(data);
-            }
-            catch (err) {
-                setError(err instanceof Error ? err.message : 'Unknown Error');
-            }
-            finally {
-                setLoading(false);
-            }
+        if (!res.ok) {
+          throw new Error('HTTP error. Could not fetch data.');
         }
 
-        fetchData();
-    }, []);
-
-    // Loading state
-    if (loading) {
-        return (
-            <>
-                <p>Loading...</p>
-            </>
-        );
+        const data = await res.json();
+        setSheetData(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown Error');
+      } finally {
+        setLoading(false);
+      }
     }
 
-    // Error state
-    if (error) {
-        return (
-            <>
-                <p>Failed to fetch data.</p>
-            </>
-        );
-    }
+    fetchData();
+  }, []);
 
-    // Pull headers from the objects
-    if (sheetData.length <= 0) {
-        return (
-            <p>
-                No Data Found.
-            </p>
-        )
-    }
-
-    const headers = Object.keys(sheetData[0]);
-    const columns = headers.map((header) => ({
-        key: header,
-        label: header,
-    }));
-
+  // Loading state
+  if (loading) {
     return (
-        <>
-            <h1>Recipients</h1>
-            <DataTable columns={columns} data={sheetData} />
-        </>
+      <>
+        <p>Loading...</p>
+      </>
     );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <>
+        <p>Failed to fetch data.</p>
+      </>
+    );
+  }
+
+  // Pull headers from the objects
+  if (sheetData.length <= 0) {
+    return <p>No Data Found.</p>;
+  }
+
+  const headers = Object.keys(sheetData[0]);
+  const columns = headers.map((header) => ({
+    key: header,
+    label: header,
+  }));
+
+  return (
+    <>
+      <h1>Recipients</h1>
+      <DataTable columns={columns} data={sheetData} />
+    </>
+  );
 }
