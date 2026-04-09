@@ -161,6 +161,11 @@ export const getParsedNonprofitData = async () => {
       lastDelivery: totals.lastDelivery
         ? totals.lastDelivery.toISOString().split('T')[0]
         : null,
+      daysSinceLastDelivery: totals.lastDelivery
+        ? Math.floor(
+            (Date.now() - totals.lastDelivery.getTime()) / (1000 * 60 * 60 * 24),
+          )
+        : null,
       totalDeliveriesThisMonth: totals.totalDeliveriesThisMonth,
       totalPoundsThisMonth: totals.totalPoundsThisMonth,
       totalDeliveriesThisYear: totals.totalDeliveriesThisYear,
