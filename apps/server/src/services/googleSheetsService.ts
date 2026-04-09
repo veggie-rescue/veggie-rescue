@@ -48,6 +48,23 @@ type RecipientInfo = {
   location: string | null;
 };
 
+type RecipientRow = {
+  name: string;
+  accepts: string;
+  orgType: string;
+  demographicServed: string;
+  location: string;
+  priority: number | null;
+  address: string;
+  availableDeliveryDays: string;
+  contact: string;
+  contactPhone: string;
+  officeContact: string;
+  officePhone: string;
+  officeEmail: string;
+  notes: string;
+};
+
 type Totals = {
   lastDelivery: Date | null;
   totalDeliveriesThisMonth: number | 0;
@@ -176,4 +193,32 @@ export const getParsedNonprofitData = async () => {
   });
 
   return result;
+};
+
+export const getParsedRecipientData = async (): Promise<RecipientRow[]> => {
+  const recipientData = await fetchSheetValues(
+    '13tTXxSsk59AuCTKTW_6u2wNCcuenXBATYdB10AKgN88',
+    'Food_Recipients!A:O',
+  );
+
+  const recipientObjects = rowsToObjects(recipientData);
+
+  return recipientObjects
+    .filter((r) => r['Name'])
+    .map((r) => ({
+      name: r['Name'],
+      accepts: r['Accepts'] ?? '',
+      orgType: r['Org Type'] ?? '',
+      demographicServed: r['Demographic Served'] ?? '',
+      location: r['location'] ?? '',
+      priority: r['priority'] ? Number(r['priority']) : null,
+      address: r['Address'] ?? '',
+      availableDeliveryDays: r['available delivery days'] ?? '',
+      contact: r['Contact'] ?? '',
+      contactPhone: r['Contact Phone'] ?? '',
+      officeContact: r['Office Contact'] ?? '',
+      officePhone: r['Office Phone'] ?? '',
+      officeEmail: r['Office Email'] ?? '',
+      notes: r['Notes'] ?? '',
+    }));
 };
