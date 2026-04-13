@@ -1,6 +1,18 @@
 'use client';
 import { useState, useEffect } from 'react';
-import DataTable from '@/components/DataTable/DataTable';
+import { DataTable } from '@/components/DataTable/DataTable';
+
+function getErrorType(error: any): string {
+    if (!(error instanceof Error)) {
+      return 'Unknown error';
+    }
+    else if (error.name === 'AbortError') {
+      return 'Fetch aborted.';
+    } 
+    else {
+      return error.message;
+    }
+}
 
 export default function Recipients() {
   // Loading and Error states
@@ -14,16 +26,20 @@ export default function Recipients() {
     // TODO: adjust fetch route when the backend route changes
     async function fetchData() {
       try {
-        const res = await fetch('http://localhost:3000/testing');
+        const controller = new  AbortController();
+        const signal = controller.signal;
+        const res = await fetch('http://localhost:3000/testing', { signal });
 
         if (!res.ok) {
-          throw new Error('HTTP error. Could not fetch data.');
+          throw new Error(`${res.status}: ${res.statusText}`);
         }
 
         const data = await res.json();
         setSheetData(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown Error');
+        const error = getErrorType(err);
+        
+        setError(error);
       } finally {
         setLoading(false);
       }
@@ -45,7 +61,7 @@ export default function Recipients() {
   if (error) {
     return (
       <>
-        <p>Failed to fetch data.</p>
+        <p>Failed to fetch data. Error: {error}</p>
       </>
     );
   }

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useTableData } from '@/context/TableDataContext';
-import DataTable from '@/components/DataTable/DataTable';
+import { DataTable } from '@/components/DataTable/DataTable';
 import TableState from '@/components/TableState/TableState';
 import styles from './page.module.scss';
 
