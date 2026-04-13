@@ -4,7 +4,7 @@ import { useId, useState } from 'react';
 
 import Table, { type Column, type DataRow, type SortDirection } from '../Table/Table';
 import TableState from '../TableState/TableState';
-import styles from './DataTable.module.scss';
+import styles from '../Table/Table.module.scss';
 
 type DataTableProps = {
   columns: Column[];
@@ -41,7 +41,7 @@ function compareValues(left: string, right: string) {
   });
 }
 
-function DataTable({ columns, data }: Readonly<DataTableProps>) {
+export function DataTable({ columns, data }: Readonly<DataTableProps>) {
   const searchFieldId = useId();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortKey, setSortKey] = useState<string | null>(null);
@@ -155,5 +155,3 @@ function DataTable({ columns, data }: Readonly<DataTableProps>) {
     </section>
   );
 }
-
-export default DataTable;
