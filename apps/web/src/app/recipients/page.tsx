@@ -14,7 +14,14 @@ export default function Recipients() {
     // TODO: adjust fetch route when the backend route changes
     async function fetchData() {
       try {
-        const res = await fetch('http://localhost:3000/recipients');
+        const accessCode = localStorage.getItem('accessCode');
+        if (!accessCode) {
+          throw new Error('Missing access code. Please log in again.');
+        }
+
+        const res = await fetch('http://localhost:3000/recipients', {
+          headers: { Authorization: `Bearer ${accessCode}` },
+        });
 
         if (!res.ok) {
           throw new Error('HTTP error. Could not fetch data.');
