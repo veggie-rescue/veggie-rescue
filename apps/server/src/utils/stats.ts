@@ -1,8 +1,11 @@
 /**
- * Compute the standard deviation of an array of numbers (population std dev).
+ * Compute the population standard deviation of an array.
+ * Throws on empty input — std dev of no data is undefined.
  */
-export function calcStdDev(values: number[]): number {
-  if (values.length === 0) return 0;
+export function calcStdDev(values: readonly number[]): number {
+  if (values.length === 0) {
+    throw new Error('calcStdDev: cannot compute std dev of an empty array');
+  }
 
   const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
   const squaredDiffs = values.reduce((sum, v) => sum + (v - mean) ** 2, 0);
@@ -11,17 +14,42 @@ export function calcStdDev(values: number[]): number {
 }
 
 /**
- * Compute the median of an array of numbers.
+ * Compute the sample standard deviation (Bessel-corrected, n-1 denominator).
+ * Throws on arrays of length < 2 — sample std dev is undefined.
  */
-export function calcMedian(values: number[]): number {
-  if (values.length === 0) return 0;
+export function calcSampleStdDev(values: readonly number[]): number {
+  if (values.length < 2) {
+    throw new Error(
+      'calcSampleStdDev: need at least 2 values for sample std dev',
+    );
+  }
+
+  const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
+  const squaredDiffs = values.reduce((sum, v) => sum + (v - mean) ** 2, 0);
+
+  return Math.sqrt(squaredDiffs / (values.length - 1));
+}
+
+/**
+ * Compute the median of an array. Throws on empty input.
+ */
+export function calcMedian(values: readonly number[]): number {
+  if (values.length === 0) {
+    throw new Error('calcMedian: cannot compute median of an empty array');
+  }
 
   const sorted = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
+  return medianOfSorted(sorted);
+}
 
-  return sorted.length % 2 === 0
-    ? (sorted[mid - 1] + sorted[mid]) / 2
-    : sorted[mid];
+function medianOfSorted(sorted: readonly number[]): number {
+  const len = sorted.length;
+  const mid = Math.floor(len / 2);
+
+  if (len % 2 === 0) {
+    return ((sorted[mid - 1] as number) + (sorted[mid] as number)) / 2;
+  }
+  return sorted[mid] as number;
 }
 
 /**
@@ -43,7 +71,9 @@ export function initRunningStdDev(): RunningStdDevState {
 /**
  * Create running state from an existing array so you can continue adding values incrementally.
  */
-export function runningStdDevFromArray(values: number[]): RunningStdDevState {
+export function runningStdDevFromArray(
+  values: readonly number[],
+): RunningStdDevState {
   let state = initRunningStdDev();
   for (const value of values) {
     state = addToRunningStdDev(state, value);
@@ -69,36 +99,51 @@ export function addToRunningStdDev(
 }
 
 /**
- * Get the current standard deviation from running state.
+ * Get the current population standard deviation from running state.
+ * Matches calcStdDev (n denominator). Throws on empty state.
  */
 export function getStdDev(state: RunningStdDevState): number {
-  if (state.count === 0) return 0;
+  if (state.count === 0) {
+    throw new Error('getStdDev: state has no data');
+  }
   return Math.sqrt(state.m2 / state.count);
 }
 
 /**
- * Add a value to a sorted array and return the new median.
- * Mutates the array by inserting in sorted order.
- *
- * Note: Unlike std dev, median cannot be computed incrementally from just
- * the previous median + count. You need the underlying sorted data.
+ * Get the current sample standard deviation from running state.
+ * Matches calcSampleStdDev (n-1 denominator). Throws on count < 2.
  */
-export function addToSortedAndGetMedian(
+export function getSampleStdDev(state: RunningStdDevState): number {
+  if (state.count < 2) {
+    throw new Error(
+      'getSampleStdDev: need at least 2 values for sample std dev',
+    );
+  }
+  return Math.sqrt(state.m2 / (state.count - 1));
+}
+
+/**
+ * MUTATES `sorted` by inserting `newValue` in sorted order, then returns
+ * the new median of the resulting array.
+ *
+ * The sorted array IS the state — callers must keep it across updates.
+ * Assumes `sorted` is already ascending; undefined behavior otherwise.
+ *
+ * Median cannot be computed incrementally from just a previous median +
+ * count, so this helper keeps the underlying sorted data as state.
+ */
+export function insertIntoSortedAndGetMedian(
   sorted: number[],
   newValue: number,
 ): number {
-  // Binary search for insertion index
   let lo = 0;
   let hi = sorted.length;
   while (lo < hi) {
     const mid = (lo + hi) >>> 1;
-    if (sorted[mid] < newValue) lo = mid + 1;
+    if ((sorted[mid] as number) < newValue) lo = mid + 1;
     else hi = mid;
   }
   sorted.splice(lo, 0, newValue);
 
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0
-    ? (sorted[mid - 1] + sorted[mid]) / 2
-    : sorted[mid];
+  return medianOfSorted(sorted);
 }
