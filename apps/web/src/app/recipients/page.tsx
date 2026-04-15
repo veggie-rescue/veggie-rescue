@@ -14,7 +14,7 @@ export default function Recipients() {
     // TODO: adjust fetch route when the backend route changes
     async function fetchData() {
       try {
-        const res = await fetch('http://localhost:3000/testing');
+        const res = await fetch('http://localhost:3000/recipients');
 
         if (!res.ok) {
           throw new Error('HTTP error. Could not fetch data.');

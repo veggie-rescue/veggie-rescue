@@ -66,6 +66,23 @@ type RecipientInfo = {
   location: string | null;
 };
 
+export type RecipientRow = {
+  name: string;
+  accepts: string;
+  orgType: string;
+  demographicServed: string;
+  location: string;
+  priority: string;
+  address: string;
+  availableDeliveryDays: string;
+  contact: string;
+  contactPhone: string;
+  officeContact: string;
+  officePhone: string;
+  officeEmail: string;
+  notes: string;
+};
+
 type Totals = {
   lastDelivery: Date | null;
   totalDeliveriesThisMonth: number | 0;
@@ -197,4 +214,46 @@ export const getParsedNonprofitData = async () => {
   });
 
   return result;
+};
+
+// Header keys here must match the exact casing/spacing used in the
+// Food_Recipients sheet (note: some are lowercase, e.g. "location",
+// "priority", "available delivery days").
+const RECIPIENT_HEADERS = {
+  name: 'Name',
+  accepts: 'Accepts',
+  orgType: 'Org Type',
+  demographicServed: 'Demographic Served',
+  location: 'location',
+  priority: 'priority',
+  address: 'Address',
+  availableDeliveryDays: 'available delivery days',
+  contact: 'Contact',
+  contactPhone: 'Contact Phone',
+  officeContact: 'Office Contact',
+  officePhone: 'Office Phone',
+  officeEmail: 'Office Email',
+  notes: 'Notes',
+} as const satisfies Record<keyof RecipientRow, string>;
+
+export const getParsedRecipientData = async (): Promise<RecipientRow[]> => {
+  const recipientData = await fetchSheetValues(
+    '13tTXxSsk59AuCTKTW_6u2wNCcuenXBATYdB10AKgN88',
+    'Food_Recipients!A:O',
+  );
+
+  const recipientObjects = rowsToObjects(recipientData);
+
+  return recipientObjects
+    .filter((r) => r[RECIPIENT_HEADERS.name])
+    .map((r) => {
+      const row = {} as RecipientRow;
+      for (const [field, header] of Object.entries(RECIPIENT_HEADERS) as [
+        keyof RecipientRow,
+        string,
+      ][]) {
+        row[field] = r[header] ?? '';
+      }
+      return row;
+    });
 };
