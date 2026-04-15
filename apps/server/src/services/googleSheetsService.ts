@@ -30,6 +30,16 @@ const rowsToObjects = (values: string[][]): Record<string, string>[] => {
   });
 };
 
+// Full-day calendar difference using each date's local Y/M/D. Anchoring at
+// UTC midnight sidesteps DST transitions (where wall-clock ms subtraction
+// would be off by an hour) and the UTC-vs-local parsing discrepancy for
+// "YYYY-MM-DD" strings.
+const daysBetween = (from: Date, to: Date): number => {
+  const fromUtc = Date.UTC(from.getFullYear(), from.getMonth(), from.getDate());
+  const toUtc = Date.UTC(to.getFullYear(), to.getMonth(), to.getDate());
+  return Math.max(0, Math.floor((toUtc - fromUtc) / (1000 * 60 * 60 * 24)));
+};
+
 const isSameMonth = (date: string, present = new Date(2025, 10)) => {
   const d = new Date(date);
   return (
@@ -162,9 +172,7 @@ export const getParsedNonprofitData = async () => {
         ? totals.lastDelivery.toISOString().split('T')[0]
         : null,
       daysSinceLastDelivery: totals.lastDelivery
-        ? Math.floor(
-            (Date.now() - totals.lastDelivery.getTime()) / (1000 * 60 * 60 * 24),
-          )
+        ? daysBetween(totals.lastDelivery, new Date())
         : null,
       totalDeliveriesThisMonth: totals.totalDeliveriesThisMonth,
       totalPoundsThisMonth: totals.totalPoundsThisMonth,
