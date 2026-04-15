@@ -30,13 +30,21 @@ const rowsToObjects = (values: string[][]): Record<string, string>[] => {
   });
 };
 
-// Full-day calendar difference using each date's local Y/M/D. Anchoring at
-// UTC midnight sidesteps DST transitions (where wall-clock ms subtraction
-// would be off by an hour) and the UTC-vs-local parsing discrepancy for
-// "YYYY-MM-DD" strings.
+// Full-day calendar difference in UTC. `new Date("YYYY-MM-DD")` parses as
+// UTC midnight, so using UTC getters on both sides keeps the comparison in
+// the same reference frame regardless of the server's local timezone. This
+// also avoids DST boundary errors that raw ms subtraction would introduce.
 const daysBetween = (from: Date, to: Date): number => {
-  const fromUtc = Date.UTC(from.getFullYear(), from.getMonth(), from.getDate());
-  const toUtc = Date.UTC(to.getFullYear(), to.getMonth(), to.getDate());
+  const fromUtc = Date.UTC(
+    from.getUTCFullYear(),
+    from.getUTCMonth(),
+    from.getUTCDate(),
+  );
+  const toUtc = Date.UTC(
+    to.getUTCFullYear(),
+    to.getUTCMonth(),
+    to.getUTCDate(),
+  );
   return Math.max(0, Math.floor((toUtc - fromUtc) / (1000 * 60 * 60 * 24)));
 };
 
