@@ -1,6 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import DataTable from '@/components/DataTable/DataTable';
+
+const ACCESS_CODE_KEY = 'accessCode';
 
 export default function Recipients() {
   // Loading and Error states
@@ -10,11 +14,14 @@ export default function Recipients() {
   // Fetch data
   const [sheetData, setSheetData] = useState([]);
 
+  const { logout } = useAuth();
+  const router = useRouter();
+
   useEffect(() => {
     // TODO: adjust fetch route when the backend route changes
     async function fetchData() {
       try {
-        const accessCode = localStorage.getItem('accessCode');
+        const accessCode = localStorage.getItem(ACCESS_CODE_KEY);
         if (!accessCode) {
           throw new Error('Missing access code. Please log in again.');
         }
@@ -22,6 +29,12 @@ export default function Recipients() {
         const res = await fetch('http://localhost:3000/recipients', {
           headers: { Authorization: `Bearer ${accessCode}` },
         });
+
+        if (res.status === 401) {
+          logout();
+          router.replace('/');
+          return;
+        }
 
         if (!res.ok) {
           throw new Error('HTTP error. Could not fetch data.');
@@ -37,7 +50,7 @@ export default function Recipients() {
     }
 
     fetchData();
-  }, []);
+  }, [logout, router]);
 
   // Loading state
   if (loading) {
