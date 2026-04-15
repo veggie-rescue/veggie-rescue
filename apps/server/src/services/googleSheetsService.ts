@@ -48,13 +48,13 @@ type RecipientInfo = {
   location: string | null;
 };
 
-type RecipientRow = {
+export type RecipientRow = {
   name: string;
   accepts: string;
   orgType: string;
   demographicServed: string;
   location: string;
-  priority: number | null;
+  priority: string;
   address: string;
   availableDeliveryDays: string;
   contact: string;
@@ -195,6 +195,26 @@ export const getParsedNonprofitData = async () => {
   return result;
 };
 
+// Header keys here must match the exact casing/spacing used in the
+// Food_Recipients sheet (note: some are lowercase, e.g. "location",
+// "priority", "available delivery days").
+const RECIPIENT_HEADERS = {
+  name: 'Name',
+  accepts: 'Accepts',
+  orgType: 'Org Type',
+  demographicServed: 'Demographic Served',
+  location: 'location',
+  priority: 'priority',
+  address: 'Address',
+  availableDeliveryDays: 'available delivery days',
+  contact: 'Contact',
+  contactPhone: 'Contact Phone',
+  officeContact: 'Office Contact',
+  officePhone: 'Office Phone',
+  officeEmail: 'Office Email',
+  notes: 'Notes',
+} as const satisfies Record<keyof RecipientRow, string>;
+
 export const getParsedRecipientData = async (): Promise<RecipientRow[]> => {
   const recipientData = await fetchSheetValues(
     '13tTXxSsk59AuCTKTW_6u2wNCcuenXBATYdB10AKgN88',
@@ -204,21 +224,15 @@ export const getParsedRecipientData = async (): Promise<RecipientRow[]> => {
   const recipientObjects = rowsToObjects(recipientData);
 
   return recipientObjects
-    .filter((r) => r['Name'])
-    .map((r) => ({
-      name: r['Name'],
-      accepts: r['Accepts'] ?? '',
-      orgType: r['Org Type'] ?? '',
-      demographicServed: r['Demographic Served'] ?? '',
-      location: r['location'] ?? '',
-      priority: r['priority'] ? Number(r['priority']) : null,
-      address: r['Address'] ?? '',
-      availableDeliveryDays: r['available delivery days'] ?? '',
-      contact: r['Contact'] ?? '',
-      contactPhone: r['Contact Phone'] ?? '',
-      officeContact: r['Office Contact'] ?? '',
-      officePhone: r['Office Phone'] ?? '',
-      officeEmail: r['Office Email'] ?? '',
-      notes: r['Notes'] ?? '',
-    }));
+    .filter((r) => r[RECIPIENT_HEADERS.name])
+    .map((r) => {
+      const row = {} as RecipientRow;
+      for (const [field, header] of Object.entries(RECIPIENT_HEADERS) as [
+        keyof RecipientRow,
+        string,
+      ][]) {
+        row[field] = r[header] ?? '';
+      }
+      return row;
+    });
 };

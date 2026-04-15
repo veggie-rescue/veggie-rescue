@@ -28,7 +28,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 app.use('/donations', authentication, donationRoutes);
 app.use('/sheets', authentication, sheetsRoutes);
-app.use('/recipients', recipientRoutes);
+app.use('/recipients', authentication, recipientRoutes);
 app.use('/testing', testing);
 
 app.use(errorHandler);
