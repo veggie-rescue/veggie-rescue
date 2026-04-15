@@ -30,6 +30,24 @@ const rowsToObjects = (values: string[][]): Record<string, string>[] => {
   });
 };
 
+// Full-day calendar difference in UTC. `new Date("YYYY-MM-DD")` parses as
+// UTC midnight, so using UTC getters on both sides keeps the comparison in
+// the same reference frame regardless of the server's local timezone. This
+// also avoids DST boundary errors that raw ms subtraction would introduce.
+const daysBetween = (from: Date, to: Date): number => {
+  const fromUtc = Date.UTC(
+    from.getUTCFullYear(),
+    from.getUTCMonth(),
+    from.getUTCDate(),
+  );
+  const toUtc = Date.UTC(
+    to.getUTCFullYear(),
+    to.getUTCMonth(),
+    to.getUTCDate(),
+  );
+  return Math.max(0, Math.floor((toUtc - fromUtc) / (1000 * 60 * 60 * 24)));
+};
+
 const isSameMonth = (date: string, present = new Date(2025, 10)) => {
   const d = new Date(date);
   return (
@@ -160,6 +178,9 @@ export const getParsedNonprofitData = async () => {
 
       lastDelivery: totals.lastDelivery
         ? totals.lastDelivery.toISOString().split('T')[0]
+        : null,
+      daysSinceLastDelivery: totals.lastDelivery
+        ? daysBetween(totals.lastDelivery, new Date())
         : null,
       totalDeliveriesThisMonth: totals.totalDeliveriesThisMonth,
       totalPoundsThisMonth: totals.totalPoundsThisMonth,
