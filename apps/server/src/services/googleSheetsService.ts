@@ -30,6 +30,24 @@ const rowsToObjects = (values: string[][]): Record<string, string>[] => {
   });
 };
 
+// Full-day calendar difference in UTC. `new Date("YYYY-MM-DD")` parses as
+// UTC midnight, so using UTC getters on both sides keeps the comparison in
+// the same reference frame regardless of the server's local timezone. This
+// also avoids DST boundary errors that raw ms subtraction would introduce.
+const daysBetween = (from: Date, to: Date): number => {
+  const fromUtc = Date.UTC(
+    from.getUTCFullYear(),
+    from.getUTCMonth(),
+    from.getUTCDate(),
+  );
+  const toUtc = Date.UTC(
+    to.getUTCFullYear(),
+    to.getUTCMonth(),
+    to.getUTCDate(),
+  );
+  return Math.max(0, Math.floor((toUtc - fromUtc) / (1000 * 60 * 60 * 24)));
+};
+
 const isSameMonth = (date: string, present = new Date(2025, 10)) => {
   const d = new Date(date);
   return (
@@ -46,6 +64,23 @@ const isSameYear = (date: string, present = new Date(2025, 10)) => {
 type RecipientInfo = {
   priorityLevel: number | null;
   location: string | null;
+};
+
+export type RecipientRow = {
+  name: string;
+  accepts: string;
+  orgType: string;
+  demographicServed: string;
+  location: string;
+  priority: string;
+  address: string;
+  availableDeliveryDays: string;
+  contact: string;
+  contactPhone: string;
+  officeContact: string;
+  officePhone: string;
+  officeEmail: string;
+  notes: string;
 };
 
 type Totals = {
@@ -161,6 +196,9 @@ export const getParsedNonprofitData = async () => {
       lastDelivery: totals.lastDelivery
         ? totals.lastDelivery.toISOString().split('T')[0]
         : null,
+      daysSinceLastDelivery: totals.lastDelivery
+        ? daysBetween(totals.lastDelivery, new Date())
+        : null,
       totalDeliveriesThisMonth: totals.totalDeliveriesThisMonth,
       totalPoundsThisMonth: totals.totalPoundsThisMonth,
       totalDeliveriesThisYear: totals.totalDeliveriesThisYear,
@@ -176,4 +214,46 @@ export const getParsedNonprofitData = async () => {
   });
 
   return result;
+};
+
+// Header keys here must match the exact casing/spacing used in the
+// Food_Recipients sheet (note: some are lowercase, e.g. "location",
+// "priority", "available delivery days").
+const RECIPIENT_HEADERS = {
+  name: 'Name',
+  accepts: 'Accepts',
+  orgType: 'Org Type',
+  demographicServed: 'Demographic Served',
+  location: 'location',
+  priority: 'priority',
+  address: 'Address',
+  availableDeliveryDays: 'available delivery days',
+  contact: 'Contact',
+  contactPhone: 'Contact Phone',
+  officeContact: 'Office Contact',
+  officePhone: 'Office Phone',
+  officeEmail: 'Office Email',
+  notes: 'Notes',
+} as const satisfies Record<keyof RecipientRow, string>;
+
+export const getParsedRecipientData = async (): Promise<RecipientRow[]> => {
+  const recipientData = await fetchSheetValues(
+    '13tTXxSsk59AuCTKTW_6u2wNCcuenXBATYdB10AKgN88',
+    'Food_Recipients!A:O',
+  );
+
+  const recipientObjects = rowsToObjects(recipientData);
+
+  return recipientObjects
+    .filter((r) => r[RECIPIENT_HEADERS.name])
+    .map((r) => {
+      const row = {} as RecipientRow;
+      for (const [field, header] of Object.entries(RECIPIENT_HEADERS) as [
+        keyof RecipientRow,
+        string,
+      ][]) {
+        row[field] = r[header] ?? '';
+      }
+      return row;
+    });
 };

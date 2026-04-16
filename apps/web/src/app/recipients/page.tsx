@@ -13,6 +13,19 @@ function getErrorType(error: any): string {
       return error.message;
     }
 }
+import { DataTable } from '@/components/DataTable/DataTable';
+
+function getErrorType(error: any): string {
+    if (!(error instanceof Error)) {
+      return 'Unknown error';
+    }
+    else if (error.name === 'AbortError') {
+      return 'Fetch aborted.';
+    } 
+    else {
+      return error.message;
+    }
+}
 
 export default function Recipients() {
   // Loading and Error states
@@ -29,14 +42,21 @@ export default function Recipients() {
         const controller = new  AbortController();
         const signal = controller.signal;
         const res = await fetch('http://localhost:3000/testing', { signal });
+        const controller = new  AbortController();
+        const signal = controller.signal;
+        const res = await fetch('http://localhost:3000/recipients', { signal });
 
         if (!res.ok) {
+          throw new Error(`${res.status}: ${res.statusText}`);
           throw new Error(`${res.status}: ${res.statusText}`);
         }
 
         const data = await res.json();
         setSheetData(data);
       } catch (err) {
+        const error = getErrorType(err);
+        
+        setError(error);
         const error = getErrorType(err);
         
         setError(error);
@@ -61,6 +81,7 @@ export default function Recipients() {
   if (error) {
     return (
       <>
+        <p>Failed to fetch data. Error: {error}</p>
         <p>Failed to fetch data. Error: {error}</p>
       </>
     );

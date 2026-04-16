@@ -7,6 +7,7 @@ import { corsOptions } from './middleware/cors';
 import { errorHandler } from './middleware/errorHandler';
 import { rateLimit } from './middleware/rateLimit';
 import donationRoutes from './routes/donations';
+import recipientRoutes from './routes/recipients';
 import sheetsRoutes from './routes/sheets';
 
 const app = express();
@@ -27,6 +28,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 app.use('/donations', authentication, donationRoutes);
 app.use('/sheets', authentication, sheetsRoutes);
+app.use('/recipients', authentication, recipientRoutes);
 app.use('/testing', testing);
 
 app.use(errorHandler);
