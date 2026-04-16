@@ -1,6 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { DataTable } from '@/components/DataTable/DataTable';
+
+const ACCESS_CODE_KEY = 'accessCode';
 
 // Used to differentiate between an AbortError and other error types
 function getErrorMessage(error: any): string {
@@ -23,13 +27,31 @@ export default function Recipients() {
   // Fetch data
   const [sheetData, setSheetData] = useState([]);
 
+  const { logout } = useAuth();
+  const router = useRouter();
+
   useEffect(() => {
     // TODO: adjust fetch route when the backend route changes
     async function fetchData() {
       try {
         const controller = new  AbortController();
         const signal = controller.signal;
-        const res = await fetch('http://localhost:3000/recipients', { signal });
+        
+        const accessCode = localStorage.getItem(ACCESS_CODE_KEY);
+        if (!accessCode) {
+          throw new Error('Missing access code. Please log in again.');
+        }
+
+        const res = await fetch('http://localhost:3000/recipients', { 
+          signal, 
+          headers: { Authorization: `Bearer ${accessCode}` },
+        });
+
+        if (res.status === 401) {
+          logout();
+          router.replace('/');
+          return;
+        }
 
         if (!res.ok) {
           throw new Error(`${res.status}: ${res.statusText}`);
@@ -47,7 +69,7 @@ export default function Recipients() {
     }
 
     fetchData();
-  }, []);
+  }, [logout, router]);
 
   // Loading state
   if (loading) {
