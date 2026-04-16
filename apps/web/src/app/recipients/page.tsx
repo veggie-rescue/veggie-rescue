@@ -2,20 +2,8 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from '@/components/DataTable/DataTable';
 
-function getErrorType(error: any): string {
-    if (!(error instanceof Error)) {
-      return 'Unknown error';
-    }
-    else if (error.name === 'AbortError') {
-      return 'Fetch aborted.';
-    } 
-    else {
-      return error.message;
-    }
-}
-import { DataTable } from '@/components/DataTable/DataTable';
-
-function getErrorType(error: any): string {
+// Used to differentiate between an AbortError and other error types
+function getErrorMessage(error: any): string {
     if (!(error instanceof Error)) {
       return 'Unknown error';
     }
@@ -41,23 +29,16 @@ export default function Recipients() {
       try {
         const controller = new  AbortController();
         const signal = controller.signal;
-        const res = await fetch('http://localhost:3000/testing', { signal });
-        const controller = new  AbortController();
-        const signal = controller.signal;
         const res = await fetch('http://localhost:3000/recipients', { signal });
 
         if (!res.ok) {
-          throw new Error(`${res.status}: ${res.statusText}`);
           throw new Error(`${res.status}: ${res.statusText}`);
         }
 
         const data = await res.json();
         setSheetData(data);
       } catch (err) {
-        const error = getErrorType(err);
-        
-        setError(error);
-        const error = getErrorType(err);
+        const error = getErrorMessage(err);
         
         setError(error);
       } finally {
@@ -81,7 +62,6 @@ export default function Recipients() {
   if (error) {
     return (
       <>
-        <p>Failed to fetch data. Error: {error}</p>
         <p>Failed to fetch data. Error: {error}</p>
       </>
     );
