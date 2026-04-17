@@ -7,7 +7,7 @@ import { DataTable } from '@/components/DataTable/DataTable';
 const ACCESS_CODE_KEY = 'accessCode';
 
 // Used to differentiate between an AbortError and other error types
-function getErrorMessage(error: any): string {
+function getErrorMessage(error: unknown): string {
     if (!(error instanceof Error)) {
       return 'Unknown error';
     }
@@ -17,6 +17,17 @@ function getErrorMessage(error: any): string {
     else {
       return error.message;
     }
+}
+
+// Ensure that the user is logged in
+function getAccessCode() {
+  const accessCode = localStorage.getItem(ACCESS_CODE_KEY);
+
+  if (!accessCode) {
+    throw new Error('Missing access code. Please log in again.');
+  }
+
+  return accessCode;
 }
 
 export default function Recipients() {
@@ -31,20 +42,15 @@ export default function Recipients() {
   const router = useRouter();
 
   useEffect(() => {
-    // TODO: adjust fetch route when the backend route changes
+    const controller = new AbortController();
+
     async function fetchData() {
       try {
-        const controller = new  AbortController();
         const signal = controller.signal;
         
-        const accessCode = localStorage.getItem(ACCESS_CODE_KEY);
-        if (!accessCode) {
-          throw new Error('Missing access code. Please log in again.');
-        }
-
         const res = await fetch('http://localhost:3000/recipients', { 
           signal, 
-          headers: { Authorization: `Bearer ${accessCode}` },
+          headers: { Authorization: `Bearer ${getAccessCode()}` },
         });
 
         if (res.status === 401) {
@@ -69,6 +75,7 @@ export default function Recipients() {
     }
 
     fetchData();
+    return () => controller.abort();
   }, [logout, router]);
 
   // Loading state
