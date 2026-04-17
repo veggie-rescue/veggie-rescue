@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import DataTable from '@/components/DataTable/DataTable';
 
 const ACCESS_CODE_KEY = 'accessCode';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function Recipients() {
   // Loading and Error states
@@ -26,7 +27,7 @@ export default function Recipients() {
           throw new Error('Missing access code. Please log in again.');
         }
 
-        const res = await fetch('http://localhost:3000/recipients', {
+        const res = await fetch(`${API_BASE_URL}/recipients`, {
           headers: { Authorization: `Bearer ${accessCode}` },
         });
 
