@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { DataTable } from '@/components/DataTable/DataTable';
 
 const ACCESS_CODE_KEY = 'accessCode';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 // Used to differentiate between an AbortError and other error types
 function getErrorMessage(error: unknown): string {
@@ -47,9 +48,8 @@ export default function Recipients() {
     async function fetchData() {
       try {
         const signal = controller.signal;
-        
-        const res = await fetch('http://localhost:3000/recipients', { 
-          signal, 
+
+        const res = await fetch(`${API_BASE_URL}/recipients`, {
           headers: { Authorization: `Bearer ${getAccessCode()}` },
         });
 
