@@ -167,6 +167,14 @@ function Table({
         </button>
       </div>
 
+      <div className={styles.metaRow}>
+        <p className={styles.resultCount}>{resultCountLabel}</p>
+        <p className={styles.helperText}>
+          Click a column title to sort. Swipe sideways on smaller screens to see every
+          column.
+        </p>
+      </div>
+
       {/* Table */}
       <table className={styles.table}>
         <thead>
@@ -203,3 +211,20 @@ function Table({
 }
 
 export default Table;
+
+// {sortedRows.length ? (
+//         <Table
+//           columns={columns}
+//           data={sortedRows}
+//           sortKey={sortKey}
+//           sortDirection={sortDirection}
+//           onSort={handleSort}
+//         />
+//       ) : (
+//         <TableState
+//           compact
+//           variant="empty"
+//           title="No matching rows"
+//           message="Try a different search term to find the row you need."
+//         />
+//       )}
