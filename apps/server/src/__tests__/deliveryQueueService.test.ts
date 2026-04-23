@@ -182,7 +182,9 @@ describe('generateDeliveryQueue', () => {
     expect(needsDays?.needScore).toBeGreaterThan(0);
     expect(baselineA?.needScore).toBe(0);
   });
+});
 
+describe('generateDeliveryQueue missing-data behavior', () => {
   it('treats missing priority as neutral and still includes recipients', () => {
     const recipients: NonprofitDeliveryData[] = [
       {
@@ -212,7 +214,7 @@ describe('generateDeliveryQueue', () => {
     expect(queue[1]?.needScore).toBe(0);
   });
 
-  it('excludes recipients with missing non-priority required scoring inputs', () => {
+  it('treats missing non-priority scoring fields as neutral and includes recipients', () => {
     const recipients: NonprofitDeliveryData[] = [
       {
         recipient: 'Missing Days',
@@ -221,7 +223,7 @@ describe('generateDeliveryQueue', () => {
         totalPoundsThisMonth: 100,
         totalDeliveriesThisMonth: 3,
         deliveryFrequency: 'Low',
-        location: 'A',
+        location: undefined,
       },
       {
         recipient: 'Valid Org',
@@ -235,9 +237,15 @@ describe('generateDeliveryQueue', () => {
     ];
 
     const queue = generateDeliveryQueue(recipients);
+    const missingDays = queue.find((r) => r.foodRecipient === 'Missing Days');
+    const validOrg = queue.find((r) => r.foodRecipient === 'Valid Org');
 
-    expect(queue).toHaveLength(1);
-    expect(queue[0]?.foodRecipient).toBe('Valid Org');
+    expect(queue).toHaveLength(2);
+    expect(missingDays).toBeDefined();
+    expect(validOrg).toBeDefined();
+    expect(missingDays?.location).toBeNull();
+    expect(typeof missingDays?.needScore).toBe('number');
+    expect(Number.isFinite(missingDays?.needScore ?? Number.NaN)).toBe(true);
   });
 
   it('never emits null needScore when source numeric fields contain NaN', () => {

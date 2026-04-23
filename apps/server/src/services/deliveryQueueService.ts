@@ -136,23 +136,7 @@ export const generateDeliveryQueue = (
       .filter((value): value is number => value !== null),
   );
 
-  const hasAllScoringInputs = (
-    recipient: NonprofitDeliveryData,
-  ): recipient is NonprofitDeliveryData & {
-    daysSinceLastDelivery: number;
-    totalPoundsThisMonth: number;
-    totalDeliveriesThisMonth: number;
-  } => {
-    return (
-      Number.isFinite(recipient.daysSinceLastDelivery) &&
-      Number.isFinite(recipient.totalPoundsThisMonth) &&
-      Number.isFinite(recipient.totalDeliveriesThisMonth) &&
-      getFrequencyScore(recipient.deliveryFrequency) !== null
-    );
-  };
-
   return recipients
-    .filter(hasAllScoringInputs)
     .map((recipient) => {
       const weightedSum =
         weightedAbove(recipient.daysSinceLastDelivery, daysStats, 0.35) +
