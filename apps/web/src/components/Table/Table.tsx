@@ -60,12 +60,6 @@ export function Table({
         setSortDirection('asc');
     };
 
-    function createSortHandler(columnKey: string): MouseEventHandler<HTMLButtonElement> {
-        return () => {
-            handleSort(columnKey);
-        };
-    };
-
     // Semantic data
     const getSortIndicator = (columnKey: string) => {
         if (sortKey !== columnKey) {
@@ -134,7 +128,7 @@ export function Table({
                                 <button
                                     type="button"
                                     className={styles.sortButton}
-                                    onClick={createSortHandler(column.key)}
+                                    onClick={() => handleSort(column.key)}
                                     aria-label={`Sort by ${column.label}`}
                                 >
                                     <span>{column.label}</span>
