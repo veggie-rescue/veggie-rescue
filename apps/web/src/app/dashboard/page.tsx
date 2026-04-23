@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useTableData } from '@/context/TableDataContext';
-import DataTable from '@/components/DataTable/DataTable';
-import TableState from '@/components/TableState/TableState';
+import { Table } from "@/components/Table/Table";
+import TableState from '@/components/Table/TableState/TableState';
 import styles from './page.module.scss';
 
 export default function DashboardPage() {
@@ -125,7 +125,7 @@ export default function DashboardPage() {
             Showing saved data. Latest fetch failed.
           </p>
         ) : null}
-        <DataTable columns={columns} data={tableRows} />
+        <Table columns={columns} data={tableRows} />
       </section>
     </main>
   );
