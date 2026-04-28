@@ -1,4 +1,4 @@
-import { type MouseEventHandler, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import TableState from "./TableState/TableState";
 import { sortRows } from "./util/sortRows";
 import { filterRows } from "./util/filterRows";
@@ -90,7 +90,7 @@ export function Table({
 
     // Populated Table
     return (
-        <section className={styles.wrapper}>
+        <section className={styles.tableSection}>
             {/* Search Bar */}
             {toggleSearchBar  && (
                 <Toolbar
@@ -111,46 +111,48 @@ export function Table({
                 </p>
             </div>
 
-            {/* No search results */}
-            {hasNoSearchResults ? (
-                <TableState
-                    compact
-                    variant="empty"
-                    title="No matching rows"
-                    message="Try a different search term to find the row you need."
-                />
-            ) : (
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                        {columns.map((column) => (
-                            <th key={column.key} scope="col" aria-sort={getAriaSort(column.key)}>
-                                <button
-                                    type="button"
-                                    className={styles.sortButton}
-                                    onClick={() => handleSort(column.key)}
-                                    aria-label={`Sort by ${column.label}`}
-                                >
-                                    <span>{column.label}</span>
-                                    <span className={styles.sortIndicator} aria-hidden="true">
-                                    {getSortIndicator(column.key)}
-                                    </span>
-                                </button>
-                            </th>
-                        ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sortedRows.map((row, rowIndex) => (
-                        <tr key={`${row[columns[0]?.key ?? 'row'] ?? 'row'}-${rowIndex}`}>
+            <div className={styles.tableContainer} aria-label="Scrollable data table">
+                {/* No search results */}
+                {hasNoSearchResults ? (
+                    <TableState
+                        compact
+                        variant="empty"
+                        title="No matching rows"
+                        message="Try a different search term to find the row you need."
+                    />
+                ) : (
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
                             {columns.map((column) => (
-                            <td key={column.key}>{row[column.key] ?? ''}</td>
+                                <th key={column.key} scope="col" aria-sort={getAriaSort(column.key)}>
+                                    <button
+                                        type="button"
+                                        className={styles.sortButton}
+                                        onClick={() => handleSort(column.key)}
+                                        aria-label={`Sort by ${column.label}`}
+                                    >
+                                        <span>{column.label}</span>
+                                        <span className={styles.sortIndicator} aria-hidden="true">
+                                        {getSortIndicator(column.key)}
+                                        </span>
+                                    </button>
+                                </th>
                             ))}
-                        </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {sortedRows.map((row, rowIndex) => (
+                            <tr key={`${row[columns[0]?.key ?? 'row'] ?? 'row'}-${rowIndex}`}>
+                                {columns.map((column) => (
+                                <td key={column.key}>{row[column.key] ?? ''}</td>
+                                ))}
+                            </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
         </section>
     );
 }

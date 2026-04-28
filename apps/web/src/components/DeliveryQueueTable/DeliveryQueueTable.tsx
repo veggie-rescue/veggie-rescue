@@ -1,6 +1,6 @@
 'use client'
 
-import Table, { type Column } from '../Table/Table';
+import { Table, type Column } from '../Table/Table';
 
 type DeliveryQueueItem = {
     recipient: string,
