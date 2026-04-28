@@ -2,10 +2,34 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import DataTable from '@/components/DataTable/DataTable';
+import { DataTable } from '@/components/DataTable/DataTable';
 
 const ACCESS_CODE_KEY = 'accessCode';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+// Used to differentiate between an AbortError and other error types
+function getErrorMessage(error: unknown): string {
+    if (!(error instanceof Error)) {
+      return 'Unknown error';
+    }
+    else if (error.name === 'AbortError') {
+      return 'Fetch aborted.';
+    } 
+    else {
+      return error.message;
+    }
+}
+
+// Ensure that the user is logged in
+function getAccessCode() {
+  const accessCode = localStorage.getItem(ACCESS_CODE_KEY);
+
+  if (!accessCode) {
+    throw new Error('Missing access code. Please log in again.');
+  }
+
+  return accessCode;
+}
 
 export default function Recipients() {
   // Loading and Error states
@@ -19,16 +43,14 @@ export default function Recipients() {
   const router = useRouter();
 
   useEffect(() => {
-    // TODO: adjust fetch route when the backend route changes
+    const controller = new AbortController();
+
     async function fetchData() {
       try {
-        const accessCode = localStorage.getItem(ACCESS_CODE_KEY);
-        if (!accessCode) {
-          throw new Error('Missing access code. Please log in again.');
-        }
+        const signal = controller.signal;
 
         const res = await fetch(`${API_BASE_URL}/recipients`, {
-          headers: { Authorization: `Bearer ${accessCode}` },
+          headers: { Authorization: `Bearer ${getAccessCode()}` },
         });
 
         if (res.status === 401) {
@@ -38,19 +60,22 @@ export default function Recipients() {
         }
 
         if (!res.ok) {
-          throw new Error('HTTP error. Could not fetch data.');
+          throw new Error(`${res.status}: ${res.statusText}`);
         }
 
         const data = await res.json();
         setSheetData(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown Error');
+        const error = getErrorMessage(err);
+        
+        setError(error);
       } finally {
         setLoading(false);
       }
     }
 
     fetchData();
+    return () => controller.abort();
   }, [logout, router]);
 
   // Loading state
@@ -66,7 +91,7 @@ export default function Recipients() {
   if (error) {
     return (
       <>
-        <p>Failed to fetch data.</p>
+        <p>Failed to fetch data. Error: {error}</p>
       </>
     );
   }
