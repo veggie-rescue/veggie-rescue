@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import DataTable from '@/components/DataTable/DataTable';
+import { Table } from '@/components/Table/Table';
 
 const ACCESS_CODE_KEY = 'accessCode';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -85,7 +85,7 @@ export default function Recipients() {
   return (
     <>
       <h1>Recipients</h1>
-      <DataTable columns={columns} data={sheetData} />
+      <Table columns={columns} data={sheetData} />
     </>
   );
 }

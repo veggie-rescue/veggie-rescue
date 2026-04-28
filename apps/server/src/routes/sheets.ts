@@ -21,33 +21,33 @@ const router = Router();
 const objectsToSheetValues = (rows: Record<string, any>[]): string[][] => {
   if (!rows.length) return [];
 
-  const headers = Object.keys(rows[0]);
+  const [firstRow] = rows;
+  if (!firstRow) return [];
+
+  const headers = Object.keys(firstRow);
 
   const values = rows.map((row) =>
-    headers.map((header) => String(row[header] ?? ""))
+    headers.map((header) => String(row[header] ?? ''))
   );
 
   return [headers, ...values];
 };
 
-router.get("/", async (req, res) => {
+router.get('/', async (_req, res) => {
   try {
-
     const parsedData = await getParsedNonprofitData();
-
     const values = objectsToSheetValues(parsedData);
 
     res.json({
       data: {
-        range: "dashboard",  
-        majorDimension: "ROWS",
-        values
-      }
+        range: 'dashboard',
+        majorDimension: 'ROWS',
+        values,
+      },
     });
-
-  } catch (error) {
+  } catch {
     res.status(500).json({
-      error: "Failed to fetch Google Sheets data"
+      error: 'Failed to fetch Google Sheets data',
     });
   }
 });

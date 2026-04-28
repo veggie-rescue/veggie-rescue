@@ -24,6 +24,11 @@ export const authentication = (
 
   // Extract request token and compare it with the access code
   const token = authHeader.split(' ')[1];
+  if (!token) {
+    next(new UnauthorizedError('Invalid access token.'));
+    return;
+  }
+
   const accessCode = process.env.ACCESS_CODE ?? '';
   if (
     token.length !== accessCode.length ||

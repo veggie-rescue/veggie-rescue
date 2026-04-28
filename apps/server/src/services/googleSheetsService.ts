@@ -1,3 +1,7 @@
+type GoogleSheetValuesResponse = {
+  values?: unknown;
+};
+
 const fetchSheetValues = async (
   spreadsheetId: string,
   range: string,
@@ -11,15 +15,17 @@ const fetchSheetValues = async (
     throw new Error(`Sheets API error: ${res.statusText}`);
   }
 
-  const data = await res.json();
-  return data.values ?? [];
+  const data = (await res.json()) as GoogleSheetValuesResponse;
+  return Array.isArray(data.values) ? (data.values as string[][]) : [];
 };
 
 const rowsToObjects = (values: string[][]): Record<string, string>[] => {
   if (!values || values.length === 0) return [];
 
-  const headers = values[0]?.map((h) => h.trim());
-  const rows = values.slice(1);
+  const [headerRow, ...rows] = values;
+  if (!headerRow) return [];
+
+  const headers = headerRow.map((header) => header.trim());
 
   return rows.map((row) => {
     const obj: Record<string, string> = {};
